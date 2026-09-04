@@ -1,1 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIG BROTHER - Daily Sale Summary</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--line:#dfe6ef;--text:#17304f;--muted:#6d7d91;--blue:#1f5fbf;--blue2:#174b98;--green:#198754;--amber:#b67a00;--red:#c93c46;--shadow:0 10px 28px rgba(20,48,82,.08)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}body{padding:20px}.wrap{max-width:1500px;margin:0 auto}.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:16px}.topbar h1{margin:0 0 5px;font-size:28px}.subtitle{margin:0;color:var(--muted)}.pill{display:inline-flex;align-items:center;padding:8px 12px;border:1px solid #c9d8ec;border-radius:999px;background:#edf5ff;color:#245da8;font-size:12px;font-weight:800}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:var(--shadow)}.card small{display:block;color:var(--muted);font-weight:800;margin-bottom:7px}.card strong{font-size:23px}.panel{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}.filters{display:grid;grid-template-columns:1fr 1fr 1.1fr 1.1fr auto auto;gap:10px;padding:14px;border-bottom:1px solid var(--line)}input,select{width:100%;border:1px solid #cbd6e3;border-radius:9px;padding:10px 11px;font:inherit;color:var(--text);background:#fff}.btn{border:0;border-radius:9px;padding:10px 14px;font-weight:800;cursor:pointer}.btn.primary{background:var(--blue);color:#fff}.btn.primary:hover{background:var(--blue2)}.btn.secondary{background:#eef3f8;color:#284761}.btn:disabled{opacity:.55;cursor:not-allowed}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:1260px}th,td{padding:11px 10px;border-bottom:1px solid #e7edf4;text-align:left;font-size:13px;white-space:nowrap}th{background:#f7f9fc;color:#53657a;font-size:12px;position:sticky;top:0;z-index:1}tbody tr:hover{background:#f9fbfe}.money{text-align:right;font-variant-numeric:tabular-nums}.center{text-align:center}.empty{text-align:center;color:var(--muted);padding:30px}.foot{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 14px;color:var(--muted);font-size:12px}.daily-key{font-weight:900;color:#174b98}.warn{color:var(--red);font-weight:800}.overlay{position:fixed;inset:0;background:rgba(10,27,48,.68);display:flex;align-items:center;justify-content:center;padding:18px;z-index:9999}.overlay.hidden{display:none}.modal{width:min(1320px,97vw);max-height:95vh;overflow:auto;background:#eef2f7;border-radius:16px;padding:16px;box-shadow:0 25px 70px rgba(0,0,0,.3)}.modal-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;position:sticky;top:0;z-index:5;background:#eef2f7;padding:2px 0 10px}.modal-title h2{margin:0 0 4px;font-size:22px}.modal-title p{margin:0;color:var(--muted);font-size:12px}.detail-card{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px;box-shadow:var(--shadow)}.preview-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.meta-box{border:1px solid var(--line);border-radius:10px;padding:10px 12px}.meta-box small{display:block;color:var(--muted);font-weight:800;margin-bottom:4px}.meta-box strong{font-size:15px}.preview-table{min-width:1180px}.preview-table td,.preview-table th{font-size:12px}.totals{margin-top:16px;margin-left:auto;width:min(560px,100%);border-top:3px solid #2456a6;padding-top:7px}.total-row{display:flex;justify-content:space-between;gap:16px;padding:7px 8px;border-bottom:1px solid #e2e8f0;font-size:13px}.total-row strong{white-space:nowrap}.total-row.key{background:#eef5ff;color:#143d78;font-size:15px;font-weight:900}.total-row.recv{color:#9a6100}.invoice-overlay .modal{width:min(1050px,96vw)}.invoice-sheet{background:#fff;border:1px solid #9aa8b8;padding:28px 30px;color:#222;max-width:794px;margin:0 auto}.inv-header{display:flex;justify-content:space-between;gap:20px}.inv-brand{font-size:14px;line-height:1.5}.inv-brand h1{margin:0;color:#174a91;font-size:22px;letter-spacing:1px}.inv-currency{text-align:right;font-size:12px}.inv-line{border-top:2px solid #222;margin:10px 0 16px}.inv-title{text-align:center;font-size:30px;font-weight:900;color:#2867b2;margin-bottom:18px}.inv-bill{display:grid;grid-template-columns:1fr 220px;gap:20px;margin-bottom:18px;font-size:13px;line-height:1.5}.inv-no{text-align:right;color:#2867b2;font-weight:800;font-size:20px}.inv-items{min-width:0!important;table-layout:fixed}.inv-items th{position:static;background:#4472b9;color:#fff}.inv-items th,.inv-items td{border:1px solid #999;padding:7px;font-size:12px;white-space:normal}.inv-summary{width:320px;margin:14px 0 0 auto}.inv-summary-row{display:flex;justify-content:space-between;gap:15px;padding:6px 8px;border-bottom:1px solid #c7ced8}.inv-summary-row.grand{background:#4472b9;color:#fff;font-weight:900}.statusbar{display:none;margin-bottom:12px;padding:10px 12px;border-radius:9px;background:#fff0f1;color:var(--red);font-size:12px;font-weight:700}.statusbar.show{display:block}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:1fr 1fr}.preview-meta{grid-template-columns:1fr 1fr}.topbar{align-items:flex-start;flex-direction:column}}
+@media(max-width:560px){body{padding:10px}.cards{grid-template-columns:1fr 1fr;gap:8px}.card{padding:11px}.card strong{font-size:18px}.filters{grid-template-columns:1fr}.preview-meta{grid-template-columns:1fr}.modal-actions{align-items:flex-start;flex-direction:column}.invoice-sheet{padding:15px 10px}.inv-bill{grid-template-columns:1fr 120px}.inv-title{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div><h1>Daily Sale Summary</h1><p class="subtitle">Automatic daily sales grouped by Sale Date + Salesman + Location Code.</p></div>
+    <span class="pill">Invoice History Source</span>
+  </div>
+  <div id="errorBox" class="statusbar"></div>
+  <div class="cards">
+    <div class="card"><small>Summary Groups</small><strong id="cardGroups">0</strong></div>
+    <div class="card"><small>Total Sale USD</small><strong id="cardUsd">$0.00</strong></div>
+    <div class="card"><small>Total Sale KHR</small><strong id="cardKhr">៛0</strong></div>
+    <div class="card"><small>Daily Sale USD Equivalent</small><strong id="cardDailyUsd">$0.00</strong></div>
+  </div>
+  <div class="panel">
+    <div class="filters">
+      <input type="date" id="dateFrom" onchange="applyFilters()" title="Date From">
+      <input type="date" id="dateTo" onchange="applyFilters()" title="Date To">
+      <select id="salesmanFilter" onchange="applyFilters()"><option value="">All Salesmen</option></select>
+      <select id="locationFilter" onchange="applyFilters()"><option value="">All Locations</option></select>
+      <button class="btn secondary" onclick="clearFilters()">Clear</button>
+      <button class="btn primary" id="refreshBtn" onclick="loadInvoices(true)">↻ Refresh</button>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Sale Date</th><th>Salesman</th><th>Location Code</th><th class="center">Invoices</th><th class="money">Total Sale USD</th><th class="money">Total Sale KHR</th><th class="money">Avg. KHR Rate</th><th class="money">Daily Sale in USD</th><th class="money">Receivable USD</th><th class="money">Receivable KHR</th><th>Action</th></tr></thead>
+        <tbody id="summaryBody"><tr><td colspan="11" class="empty">Loading Daily Sale Summary...</td></tr></tbody>
+      </table>
+    </div>
+    <div class="foot"><span id="rowCount">0 summary groups</span><span id="syncStatus">Invoice History</span></div>
+  </div>
+</div>
 
+<div class="overlay hidden" id="previewOverlay">
+  <div class="modal">
+    <div class="modal-actions">
+      <div class="modal-title"><h2>Daily Sale Preview</h2><p id="previewSubtitle"></p></div>
+      <button class="btn secondary" onclick="closePreview()">✕ Close</button>
+    </div>
+    <div class="detail-card">
+      <div class="preview-meta" id="previewMeta"></div>
+      <div class="tablewrap"><table class="preview-table"><thead><tr><th>Invoice No</th><th>Customer</th><th>Payment</th><th>Currency</th><th class="money">Exchange Rate</th><th class="money">Grand Total</th><th class="money">Outstanding</th><th>Status</th><th>Action</th></tr></thead><tbody id="previewBody"></tbody></table></div>
+      <div class="totals" id="previewTotals"></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden invoice-overlay" id="invoiceOverlay">
+  <div class="modal">
+    <div class="modal-actions"><div class="modal-title"><h2>Invoice Preview</h2><p id="invoicePreviewSubtitle"></p></div><button class="btn secondary" onclick="closeInvoicePreview()">✕ Close</button></div>
+    <div id="invoiceSheet" class="invoice-sheet"><div class="empty">Loading invoice...</div></div>
+  </div>
+</div>
+
+<script>
+const SALES_API="https://script.google.com/macros/s/AKfycbyM5mUlz5SeMZ_oPJCo2FgLkPEcodAQ7wPl5wxAdrvfqLvsZLaHxiOtS02L1Q3ZRA3D/exec";
+const $=id=>document.getElementById(id);
+let allInvoices=[],groups=[],filteredGroups=[],currentGroup=null;
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function num(v){const n=Number(v);return Number.isFinite(n)?n:0}
+function dateOnly(v){return String(v||'').slice(0,10)}
+function usd(v){return '$'+num(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+function khr(v){return '៛'+num(v).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0})}
+function rate(v){return num(v).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:2})}
+function showError(msg){$('errorBox').textContent=msg||'';$('errorBox').classList.toggle('show',!!msg)}
+async function api(params){const res=await fetch(SALES_API+'?'+new URLSearchParams(params).toString(),{cache:'no-store'});if(!res.ok)throw new Error('Sales Database returned HTTP '+res.status);const d=await res.json();if(!d||d.success===false)throw new Error(d?.error||'Sales Database returned an error.');return d}
+function groupKey(inv){return [dateOnly(inv.invoiceDate),String(inv.salesperson||'').trim(),String(inv.locationCode||'').trim()].join('|||')}
+function calculateGroup(list){
+  const first=list[0]||{};let totalUSD=0,totalKHR=0,recvUSD=0,recvKHR=0;const khrRates=[];let khrMissingRate=false;
+  list.forEach(inv=>{const c=String(inv.currency||'USD').toUpperCase();const grand=num(inv.grandTotal),out=num(inv.outstanding);if(c==='KHR'){totalKHR+=grand;recvKHR+=out;const r=num(inv.exchangeRate);if(r>0)khrRates.push(r);else khrMissingRate=true}else{totalUSD+=grand;recvUSD+=out}});
+  const avgRate=khrRates.length?khrRates.reduce((a,b)=>a+b,0)/khrRates.length:0;
+  const hasKHR=totalKHR!==0 || list.some(i=>String(i.currency||'').toUpperCase()==='KHR');
+  const rateComplete=!hasKHR || (!khrMissingRate && khrRates.length===list.filter(i=>String(i.currency||'').toUpperCase()==='KHR').length);
+  const convertedKHR=(hasKHR&&avgRate>0&&rateComplete)?totalKHR/avgRate:0;
+  const dailySaleUSD=rateComplete?(totalUSD+convertedKHR):null;
+  return {key:groupKey(first),saleDate:dateOnly(first.invoiceDate),salesman:String(first.salesperson||'').trim()||'-',locationCode:String(first.locationCode||'').trim()||'-',invoiceCount:list.length,totalUSD,totalKHR,recvUSD,recvKHR,avgRate,rateComplete,dailySaleUSD,invoices:list.slice().sort((a,b)=>String(a.invoiceNo).localeCompare(String(b.invoiceNo)))};
+}
+function buildGroups(){const map=new Map();allInvoices.forEach(inv=>{const key=groupKey(inv);if(!map.has(key))map.set(key,[]);map.get(key).push(inv)});groups=[...map.values()].map(calculateGroup).sort((a,b)=>b.saleDate.localeCompare(a.saleDate)||a.salesman.localeCompare(b.salesman)||a.locationCode.localeCompare(b.locationCode));populateFilters();applyFilters()}
+function populateFilters(){const sales=[...new Set(groups.map(g=>g.salesman).filter(v=>v&&v!=='-'))].sort();const locs=[...new Set(groups.map(g=>g.locationCode).filter(v=>v&&v!=='-'))].sort();const s=$('salesmanFilter'),l=$('locationFilter'),sv=s.value,lv=l.value;s.innerHTML='<option value="">All Salesmen</option>'+sales.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');l.innerHTML='<option value="">All Locations</option>'+locs.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');if(sales.includes(sv))s.value=sv;if(locs.includes(lv))l.value=lv}
+function applyFilters(){const f=$('dateFrom').value,t=$('dateTo').value,s=$('salesmanFilter').value,l=$('locationFilter').value;filteredGroups=groups.filter(g=>(!f||g.saleDate>=f)&&(!t||g.saleDate<=t)&&(!s||g.salesman===s)&&(!l||g.locationCode===l));renderGroups()}
+function renderGroups(){
+  $('rowCount').textContent=`${filteredGroups.length} summary group${filteredGroups.length===1?'':'s'}`;$('cardGroups').textContent=filteredGroups.length;
+  const totalUsd=filteredGroups.reduce((x,g)=>x+g.totalUSD,0),totalKhr=filteredGroups.reduce((x,g)=>x+g.totalKHR,0);const allComplete=filteredGroups.every(g=>g.rateComplete);const dailyUsd=filteredGroups.reduce((x,g)=>x+(g.dailySaleUSD==null?0:g.dailySaleUSD),0);
+  $('cardUsd').textContent=usd(totalUsd);$('cardKhr').textContent=khr(totalKhr);$('cardDailyUsd').textContent=allComplete?usd(dailyUsd):'Rate Missing';
+  if(!filteredGroups.length){$('summaryBody').innerHTML='<tr><td colspan="11" class="empty">No Daily Sale groups found.</td></tr>';return}
+  $('summaryBody').innerHTML=filteredGroups.map(g=>`<tr><td><strong>${esc(g.saleDate)}</strong></td><td>${esc(g.salesman)}</td><td><strong>${esc(g.locationCode)}</strong></td><td class="center">${g.invoiceCount}</td><td class="money">${usd(g.totalUSD)}</td><td class="money">${khr(g.totalKHR)}</td><td class="money ${g.rateComplete?'':'warn'}">${g.totalKHR? (g.rateComplete?rate(g.avgRate):'Missing Rate'):'-'}</td><td class="money daily-key">${g.dailySaleUSD==null?'—':usd(g.dailySaleUSD)}</td><td class="money">${usd(g.recvUSD)}</td><td class="money">${khr(g.recvKHR)}</td><td><button class="btn primary" onclick='openPreview(${JSON.stringify(g.key)})'>Preview</button></td></tr>`).join('')
+}
+function clearFilters(){$('dateFrom').value='';$('dateTo').value='';$('salesmanFilter').value='';$('locationFilter').value='';applyFilters()}
+async function loadInvoices(manual=false){const btn=$('refreshBtn');if(manual){btn.disabled=true;btn.textContent='Refreshing…'}showError('');$('syncStatus').textContent='Loading Invoice History…';try{const d=await api({action:'invoiceList'});allInvoices=Array.isArray(d.invoices)?d.invoices:[];buildGroups();$('syncStatus').textContent=`Updated • ${allInvoices.length} invoices`}catch(e){showError(e.message||'Could not load invoice history.');$('summaryBody').innerHTML='<tr><td colspan="11" class="empty">Could not load Daily Sale Summary.</td></tr>'; $('syncStatus').textContent='Load failed'}finally{if(manual){btn.disabled=false;btn.textContent='↻ Refresh'}}}
+function openPreview(key){currentGroup=groups.find(g=>g.key===key);if(!currentGroup)return;const g=currentGroup;$('previewSubtitle').textContent=`${g.saleDate} • ${g.salesman} • ${g.locationCode}`;$('previewMeta').innerHTML=`<div class="meta-box"><small>Sale Date</small><strong>${esc(g.saleDate)}</strong></div><div class="meta-box"><small>Salesman</small><strong>${esc(g.salesman)}</strong></div><div class="meta-box"><small>Location Code</small><strong>${esc(g.locationCode)}</strong></div><div class="meta-box"><small>Invoices</small><strong>${g.invoiceCount}</strong></div>`;
+  $('previewBody').innerHTML=g.invoices.map(inv=>{const c=String(inv.currency||'USD').toUpperCase();return `<tr><td><strong>${esc(inv.invoiceNo)}</strong></td><td>${esc(inv.customer)}</td><td>${esc(inv.paymentMethod||'-')}</td><td>${esc(c)}</td><td class="money">${c==='KHR'?(num(inv.exchangeRate)>0?rate(inv.exchangeRate):'<span class="warn">Missing</span>'):'-'}</td><td class="money">${c==='KHR'?khr(inv.grandTotal):usd(inv.grandTotal)}</td><td class="money">${c==='KHR'?khr(inv.outstanding):usd(inv.outstanding)}</td><td>${esc(inv.status||inv.invoiceType||'-')}</td><td><button class="btn secondary" onclick='openInvoicePreview(${JSON.stringify(String(inv.invoiceNo||''))})'>View Invoice</button></td></tr>`}).join('');
+  const converted=g.dailySaleUSD==null?null:(g.totalKHR?g.totalKHR/g.avgRate:0);$('previewTotals').innerHTML=`<div class="total-row"><span>Total Sale in USD</span><strong>${usd(g.totalUSD)}</strong></div><div class="total-row"><span>Total Sale in KHR</span><strong>${khr(g.totalKHR)}</strong></div><div class="total-row"><span>Average KHR Exchange Rate</span><strong class="${g.rateComplete?'':'warn'}">${g.totalKHR?(g.rateComplete?rate(g.avgRate):'Missing Exchange Rate'):'-'}</strong></div><div class="total-row"><span>KHR Converted to USD</span><strong>${converted==null?'—':usd(converted)}</strong></div><div class="total-row key"><span>Daily Sale in USD</span><strong>${g.dailySaleUSD==null?'—':usd(g.dailySaleUSD)}</strong></div><div class="total-row recv"><span>Total Receivable USD</span><strong>${usd(g.recvUSD)}</strong></div><div class="total-row recv"><span>Total Receivable KHR</span><strong>${khr(g.recvKHR)}</strong></div>`;$('previewOverlay').classList.remove('hidden')}
+function closePreview(){$('previewOverlay').classList.add('hidden');currentGroup=null}
+async function openInvoicePreview(invoiceNo){$('invoiceOverlay').classList.remove('hidden');$('invoicePreviewSubtitle').textContent=invoiceNo;$('invoiceSheet').innerHTML='<div class="empty">Loading invoice...</div>';try{const d=await api({action:'invoiceDetail',invoiceNo});const inv=d.invoice||d;if(!inv||!inv.invoiceNo)throw new Error('Invoice detail was not returned.');renderInvoice(inv)}catch(e){$('invoiceSheet').innerHTML=`<div class="empty">${esc(e.message||'Could not load invoice.')}</div>`}}
+function closeInvoicePreview(){$('invoiceOverlay').classList.add('hidden')}
+function renderInvoice(inv){const c=String(inv.currency||'USD').toUpperCase(),sym=c==='KHR'?'៛':'$';const fmt=v=>c==='KHR'?khr(v):usd(v);const items=Array.isArray(inv.items)?inv.items:[];const rows=items.map((it,i)=>`<tr><td class="center">${i+1}</td><td><strong>${esc(it.productName||it.description||it.productCode||'')}</strong>${it.unit?`<br><small>${esc(it.unit)}</small>`:''}</td><td class="center">${num(it.qty||it.quantity)}</td><td class="money">${fmt(it.unitPrice)}</td><td class="money">${fmt(it.total||it.amount)}</td></tr>`).join('')||'<tr><td colspan="5" class="empty">No invoice items.</td></tr>';const rateLine=c==='KHR'&&num(inv.exchangeRate)>0?`<div>1 USD = ${rate(inv.exchangeRate)} KHR</div>`:'';$('invoiceSheet').innerHTML=`<div class="inv-header"><div class="inv-brand"><h1>BIG BROTHER</h1><div>Phnom Penh, Cambodia</div><div>010 650 327, 070 998 988</div><div>angsokkhey11@gmail.com</div></div><div class="inv-currency"><div>Currency: <strong>${esc(c)}</strong></div>${rateLine}</div></div><div class="inv-line"></div><div class="inv-title">INVOICE</div><div class="inv-bill"><div><strong>Bill To</strong><br>${esc(inv.customer||'')}${inv.address?'<br>'+esc(inv.address):''}${inv.phone?'<br>'+esc(inv.phone):''}</div><div class="inv-no">${esc(inv.invoiceNo)}<br><span style="font-size:12px">Invoice Date: ${esc(dateOnly(inv.invoiceDate))}</span></div></div><table class="inv-items"><thead><tr><th style="width:7%">No.</th><th>Description</th><th style="width:12%">Qty</th><th style="width:18%">Unit Price</th><th style="width:18%">Amount</th></tr></thead><tbody>${rows}</tbody></table><div class="inv-summary"><div class="inv-summary-row"><span>Subtotal</span><strong>${fmt(inv.subtotal)}</strong></div><div class="inv-summary-row"><span>Discount</span><strong>${fmt(inv.discount)}</strong></div><div class="inv-summary-row grand"><span>Grand Total</span><strong>${fmt(inv.grandTotal)}</strong></div><div class="inv-summary-row"><span>Amount Paid</span><strong>${fmt(inv.amountPaid)}</strong></div><div class="inv-summary-row"><span>Outstanding</span><strong>${fmt(inv.outstanding)}</strong></div></div><div style="margin-top:18px;font-size:12px;line-height:1.6"><strong>Sales Person:</strong> ${esc(inv.salesperson||'')}<br><strong>Payment Method:</strong> ${esc(inv.paymentMethod||'')}<br><strong>Location Code:</strong> ${esc(inv.locationCode||'')}</div>`}
+loadInvoices(false);
+</script>
+</body>
+</html>
