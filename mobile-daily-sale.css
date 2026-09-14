@@ -1,0 +1,53 @@
+/* BIG BROTHER — Daily Sale Summary Mobile V1 */
+:root{--bb-navy:#17457a;--bb-blue:#1f5fbf;--bb-bg:#f4f7fb;--bb-line:#dce5ef;--bb-muted:#718197;--bb-green:#198754;--bb-amber:#a96d00}
+html,body{background:var(--bb-bg)!important}
+body{padding:10px!important;padding-bottom:24px!important}
+.wrap{max-width:none!important;width:100%!important}
+.topbar{display:none!important}
+#bbDailyMobileBar{display:flex;align-items:center;gap:8px;margin:0 0 10px;padding:10px 11px;background:#fff;border:1px solid var(--bb-line);border-radius:13px;box-shadow:0 6px 18px rgba(20,48,82,.06);position:sticky;top:0;z-index:40}
+.bb-daily-title{min-width:0;flex:1}.bb-daily-title strong{display:block;color:var(--bb-navy);font-size:16px}.bb-daily-title span{display:block;margin-top:2px;color:var(--bb-muted);font-size:9px}
+.bb-daily-tool{min-height:38px;border:1px solid #cbd9e8;border-radius:9px;background:#fff;color:var(--bb-navy);font-size:11px;font-weight:900;padding:8px 10px}
+.bb-daily-tool.primary{background:var(--bb-navy);color:#fff;border-color:var(--bb-navy)}
+.cards{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;margin-bottom:10px!important}
+.card{padding:11px!important;border-radius:12px!important;box-shadow:none!important}.card small{font-size:9px!important;margin-bottom:5px!important}.card strong{font-size:17px!important;line-height:1.2!important}
+.panel{border-radius:13px!important;box-shadow:none!important;overflow:visible!important;background:transparent!important;border:0!important}
+.tablewrap{overflow:visible!important}
+.panel>.tablewrap>table{display:block!important;min-width:0!important;width:100%!important;background:transparent!important}
+.panel>.tablewrap>table>thead{display:none!important}
+#summaryBody{display:block!important}
+#summaryBody>tr{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;background:#fff;border:1px solid var(--bb-line);border-radius:13px;padding:11px;margin-bottom:9px;box-shadow:0 4px 14px rgba(20,48,82,.04)}
+#summaryBody>tr>td{display:block!important;padding:0!important;border:0!important;font-size:11px!important;white-space:normal!important;min-width:0!important;text-align:left!important}
+#summaryBody>tr>td:before{display:block;color:#7a8a9d;font-size:7px;font-weight:900;text-transform:uppercase;margin-bottom:2px;letter-spacing:.2px}
+#summaryBody>tr>td:nth-child(1):before{content:'Sale Date'}
+#summaryBody>tr>td:nth-child(2):before{content:'Salesman'}
+#summaryBody>tr>td:nth-child(3):before{content:'Location'}
+#summaryBody>tr>td:nth-child(4):before{content:'Invoices'}
+#summaryBody>tr>td:nth-child(5):before{content:'Sale USD'}
+#summaryBody>tr>td:nth-child(6):before{content:'Sale KHR'}
+#summaryBody>tr>td:nth-child(7):before{content:'Avg. KHR Rate'}
+#summaryBody>tr>td:nth-child(8):before{content:'Daily Sale USD'}
+#summaryBody>tr>td:nth-child(9):before{content:'Receivable USD'}
+#summaryBody>tr>td:nth-child(10):before{content:'Receivable KHR'}
+#summaryBody>tr>td:nth-child(11){grid-column:1/-1;margin-top:2px}
+#summaryBody>tr>td:nth-child(11):before{display:none}
+#summaryBody>tr>td:nth-child(11) .btn{width:100%!important;min-height:40px!important}
+#summaryBody>tr.bb-empty-row{display:block!important;text-align:center;padding:18px!important}.bb-empty-row td:before{display:none!important}
+.foot{padding:4px 3px 10px!important;font-size:9px!important;background:transparent!important}
+.filters{position:fixed!important;left:0;right:0;bottom:0;z-index:5001!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;padding:12px 12px calc(12px + env(safe-area-inset-bottom))!important;background:#fff!important;border-radius:18px 18px 0 0!important;border:1px solid var(--bb-line)!important;box-shadow:0 -18px 45px rgba(13,32,54,.2)!important;transform:translateY(110%);transition:transform .22s ease;max-height:82vh;overflow:auto}
+.filters.bb-mobile-open{transform:translateY(0)}
+.filters input,.filters select{min-height:43px!important;font-size:12px!important}.filters>.btn{display:none!important}
+.bb-daily-filter-head{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:2px}.bb-daily-filter-head strong{display:block;color:var(--bb-navy);font-size:15px}.bb-daily-filter-head span{display:block;margin-top:2px;color:var(--bb-muted);font-size:9px}.bb-daily-filter-close{width:36px;height:36px;border:0;border-radius:50%;background:#edf3f9;color:var(--bb-navy);font-size:22px;font-weight:900}
+.bb-daily-filter-actions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:2px}.bb-daily-filter-actions button{min-height:42px}
+.bb-daily-filter-backdrop{display:none;position:fixed;inset:0;z-index:5000;background:rgba(13,32,54,.48)}.bb-daily-filter-backdrop.show{display:block}
+.overlay{padding:0!important;align-items:stretch!important;background:rgba(13,32,54,.72)!important}
+.overlay>.modal{width:100%!important;max-width:none!important;max-height:none!important;height:100%!important;margin:0!important;border-radius:0!important;padding:10px!important;overflow:auto!important;background:#eef2f7!important}
+.modal-actions{position:sticky!important;top:0!important;z-index:30!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;padding:7px 0 10px!important;background:#eef2f7!important}.modal-title h2{font-size:17px!important}.modal-title p{font-size:9px!important}.modal-actions>.btn{min-height:38px!important;padding:8px 11px!important}
+.detail-card{padding:10px!important;border-radius:12px!important;box-shadow:none!important}.preview-meta{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}.meta-box{padding:8px 9px!important}.meta-box strong{font-size:12px!important}
+#previewOverlay .tablewrap{overflow:visible!important}#previewOverlay .preview-table{display:block!important;min-width:0!important;width:100%!important}#previewOverlay .preview-table thead{display:none!important}#previewBody{display:block!important}
+#previewBody>tr{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;border:1px solid var(--bb-line);border-radius:11px;padding:9px;margin-bottom:8px;background:#fbfdff}
+#previewBody>tr>td{display:block!important;padding:0!important;border:0!important;white-space:normal!important;font-size:10px!important;text-align:left!important}
+#previewBody>tr>td:before{display:block;color:#7a8a9d;font-size:7px;font-weight:900;text-transform:uppercase;margin-bottom:2px}
+#previewBody>tr>td:nth-child(1):before{content:'Invoice'}#previewBody>tr>td:nth-child(2):before{content:'Customer'}#previewBody>tr>td:nth-child(3):before{content:'Payment'}#previewBody>tr>td:nth-child(4):before{content:'Currency'}#previewBody>tr>td:nth-child(5):before{content:'Exchange Rate'}#previewBody>tr>td:nth-child(6):before{content:'Grand Total'}#previewBody>tr>td:nth-child(7):before{content:'Outstanding'}#previewBody>tr>td:nth-child(8):before{content:'Status'}#previewBody>tr>td:nth-child(9){grid-column:1/-1}#previewBody>tr>td:nth-child(9):before{display:none}#previewBody>tr>td:nth-child(9) .btn{width:100%!important;min-height:38px!important}
+.totals{width:100%!important;margin-top:11px!important}.total-row{font-size:11px!important;padding:7px 5px!important}.total-row.key{font-size:13px!important}
+#invoiceOverlay>.modal{overflow:hidden!important;display:flex!important;flex-direction:column!important}#invoiceOverlay .modal-actions{flex:0 0 auto!important}.bb-daily-invoice-scroll{flex:1 1 auto;min-height:0;overflow:auto;padding:4px 0 70px}.bb-daily-invoice-stage{position:relative;min-height:1px;margin:0 auto;--bb-invoice-scale:1}.bb-daily-invoice-stage #invoiceSheet{position:absolute!important;left:0;top:0;width:794px!important;min-width:794px!important;max-width:794px!important;margin:0!important;transform:scale(var(--bb-invoice-scale));transform-origin:top left;box-shadow:none!important;box-sizing:border-box!important}
+@media(max-width:380px){body{padding:7px!important}.cards{gap:6px!important}.card{padding:9px!important}.card strong{font-size:15px!important}#summaryBody>tr{padding:9px;gap:6px}}
