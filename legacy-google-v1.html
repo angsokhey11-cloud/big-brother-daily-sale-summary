@@ -138,34 +138,31 @@ function productLabel(p){
   return p.name+' ('+qtyText+') × '+moneyForCurrency(p.price,p.currency);
 }
 function buildCustomerRows(invoices){
-  const map=new Map();
-  invoices.forEach(function(inv){
-    const customer=String(inv.customer||'-').trim()||'-';
-    const rawKey=String(inv.customerId||inv.customerCode||customer).trim().toLowerCase();
-    if(!map.has(rawKey))map.set(rawKey,{customer:customer,invoices:[],productMap:new Map(),products:[],payments:new Set(),statuses:new Set(),totalUSD:0,totalKHR:0,outUSD:0,outKHR:0});
-    const row=map.get(rawKey);
+  const rows=(invoices||[]).map(function(inv){
     const c=String(inv.currency||'USD').toUpperCase();
-    row.invoices.push(inv);
-    if(c==='KHR'){row.totalKHR+=num(inv.grandTotal);row.outKHR+=num(inv.outstanding)}else{row.totalUSD+=num(inv.grandTotal);row.outUSD+=num(inv.outstanding)}
-    row.payments.add(String(inv.paymentMethod||'-').trim()||'-');
-    row.statuses.add(String(inv.status||inv.invoiceType||'-').trim()||'-');
+    const productMap=new Map();
     const items=Array.isArray(inv.items)?inv.items:[];
     items.forEach(function(it){
       const p=productParts(it,c);
       const key=[p.currency,p.name.toLowerCase(),String(p.price),p.unit.toLowerCase()].join('|||');
-      if(!row.productMap.has(key))row.productMap.set(key,{name:p.name,price:p.price,qty:0,unit:p.unit,currency:p.currency});
-      row.productMap.get(key).qty+=p.qty;
+      if(!productMap.has(key))productMap.set(key,{name:p.name,price:p.price,qty:0,unit:p.unit,currency:p.currency});
+      productMap.get(key).qty+=p.qty;
     });
-  });
-  const rows=Array.from(map.values()).map(function(row){
-    row.invoices.sort(function(a,b){return invoiceCompare(a.invoiceNo,b.invoiceNo)});
-    row.products=Array.from(row.productMap.values()).map(productLabel);
-    return row;
+    return {
+      invoiceNo:String(inv.invoiceNo||'').trim(),
+      customer:String(inv.customer||'-').trim()||'-',
+      invoices:[inv],
+      products:Array.from(productMap.values()).map(productLabel),
+      payments:new Set([String(inv.paymentMethod||'-').trim()||'-']),
+      statuses:new Set([String(inv.status||inv.invoiceType||'-').trim()||'-']),
+      totalUSD:c==='KHR'?0:num(inv.grandTotal),
+      totalKHR:c==='KHR'?num(inv.grandTotal):0,
+      outUSD:c==='KHR'?0:num(inv.outstanding),
+      outKHR:c==='KHR'?num(inv.outstanding):0
+    };
   });
   return rows.sort(function(a,b){
-    const aNo=a.invoices.length?String(a.invoices[0].invoiceNo||''):'';
-    const bNo=b.invoices.length?String(b.invoices[0].invoiceNo||''):'';
-    const byInvoice=invoiceCompare(aNo,bNo);
+    const byInvoice=invoiceCompare(a.invoiceNo,b.invoiceNo);
     return byInvoice!==0?byInvoice:a.customer.localeCompare(b.customer);
   });
 }
@@ -182,12 +179,13 @@ function invoiceActionHtml(row){
 }
 function renderCustomerRows(){
   if(!currentCustomerRows.length){
-    $('previewBody').innerHTML='<tr><td colspan="7" class="empty">No customer sales found.</td></tr>';
+    $('previewBody').innerHTML='<tr><td colspan="7" class="empty">No invoice sales found.</td></tr>';
     return;
   }
   $('previewBody').innerHTML=currentCustomerRows.map(function(row){
     const products=row.products.length?row.products.map(esc).join(', '):'<span class="warn">Product detail unavailable</span>';
-    return '<tr><td><strong>'+esc(row.customer)+'</strong></td><td class="sold-products">'+products+'</td><td>'+esc(Array.from(row.payments).join(', '))+'</td><td class="money">'+combinedMoney(row.totalUSD,row.totalKHR)+'</td><td class="money">'+combinedMoney(row.outUSD,row.outKHR)+'</td><td>'+esc(Array.from(row.statuses).join(', '))+'</td><td>'+invoiceActionHtml(row)+'</td></tr>';
+    const customerLabel=(row.invoiceNo?'<strong>'+esc(row.invoiceNo)+'</strong> — ':'')+esc(row.customer);
+    return '<tr><td>'+customerLabel+'</td><td class="sold-products">'+products+'</td><td>'+esc(Array.from(row.payments).join(', '))+'</td><td class="money">'+combinedMoney(row.totalUSD,row.totalKHR)+'</td><td class="money">'+combinedMoney(row.outUSD,row.outKHR)+'</td><td>'+esc(Array.from(row.statuses).join(', '))+'</td><td>'+invoiceActionHtml(row)+'</td></tr>';
   }).join('');
 }
 function renderPreviewTotals(g){
@@ -200,7 +198,7 @@ async function openPreview(key){
   const g=currentGroup;
   $('previewSubtitle').textContent=g.saleDate+' • '+g.salesman+' • '+g.locationCode;
   $('previewMeta').innerHTML='<div class="meta-box"><small>Sale Date</small><strong>'+esc(g.saleDate)+'</strong></div><div class="meta-box"><small>Salesman</small><strong>'+esc(g.salesman)+'</strong></div><div class="meta-box"><small>Location Code</small><strong>'+esc(g.locationCode)+'</strong></div><div class="meta-box"><small>Invoice Range</small><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div>';
-  $('previewBody').innerHTML='<tr><td colspan="7" class="empty">Loading customer products…</td></tr>';
+  $('previewBody').innerHTML='<tr><td colspan="7" class="empty">Loading invoice products…</td></tr>';
   renderPreviewTotals(g);
   currentCustomerRows=[];
   $('downloadSummaryBtn').disabled=true;
@@ -228,13 +226,13 @@ function reportTotalsHtml(g){
 function buildDailySaleReport(){
   if(!currentGroup||!currentCustomerRows.length)return null;
   const g=currentGroup;
-  const rows=currentCustomerRows.map(function(row){
+  const rows=currentCustomerRows.map(function(row,index){
     const products=row.products.length?row.products.map(esc).join(', '):'-';
-    return '<tr><td><strong>'+esc(row.customer)+'</strong></td><td>'+products+'</td><td class="money">'+combinedMoney(row.totalUSD,row.totalKHR)+'</td><td>'+esc(Array.from(row.statuses).join(', '))+'</td></tr>';
+    return '<tr><td class="center">'+(index+1)+'</td><td><strong>'+esc(row.customer)+'</strong></td><td>'+products+'</td><td class="money">'+combinedMoney(row.totalUSD,row.totalKHR)+'</td><td>'+esc(Array.from(row.statuses).join(', '))+'</td></tr>';
   }).join('');
   const report=document.createElement('div');
   report.className='download-report';
-  report.innerHTML='<h1>BIG BROTHER</h1><div class="report-sub">Daily Sale Summary</div><div class="report-meta"><div><small>Sale Date</small><br><strong>'+esc(g.saleDate)+'</strong></div><div><small>Salesman</small><br><strong>'+esc(g.salesman)+'</strong></div><div><small>Location</small><br><strong>'+esc(g.locationCode)+'</strong></div><div><small>Invoice Range</small><br><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div></div><table><colgroup><col style="width:18%"><col style="width:54%"><col style="width:17%"><col style="width:11%"></colgroup><thead><tr><th>Customer</th><th>Sold Products</th><th>Grand Total</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table><div class="report-totals totals">'+reportTotalsHtml(g)+'</div>';
+  report.innerHTML='<h1>BIG BROTHER</h1><div class="report-sub">Daily Sale Summary</div><div class="report-meta"><div><small>Sale Date</small><br><strong>'+esc(g.saleDate)+'</strong></div><div><small>Salesman</small><br><strong>'+esc(g.salesman)+'</strong></div><div><small>Location</small><br><strong>'+esc(g.locationCode)+'</strong></div><div><small>Invoice Range</small><br><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div></div><table><colgroup><col style="width:6%"><col style="width:18%"><col style="width:49%"><col style="width:17%"><col style="width:10%"></colgroup><thead><tr><th class="center">No.</th><th>Customer</th><th>Sold Products</th><th>Grand Total</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table><div class="report-totals totals">'+reportTotalsHtml(g)+'</div>';
   document.body.appendChild(report);
   return report;
 }
@@ -246,9 +244,10 @@ function buildDailySalePdfPages(){
   const pages=[];
   for(let pageIndex=0;pageIndex<pageCount;pageIndex++){
     const slice=currentCustomerRows.slice(pageIndex*rowsPerPage,(pageIndex+1)*rowsPerPage);
-    const rows=slice.map(function(row){
+    const startIndex=pageIndex*rowsPerPage;
+    const rows=slice.map(function(row,localIndex){
       const products=row.products.length?row.products.map(esc).join(', '):'-';
-      return '<tr><td><strong>'+esc(row.customer)+'</strong></td><td>'+products+'</td><td class="money">'+combinedMoney(row.totalUSD,row.totalKHR)+'</td><td>'+esc(Array.from(row.statuses).join(', '))+'</td></tr>';
+      return '<tr><td class="center">'+(startIndex+localIndex+1)+'</td><td><strong>'+esc(row.customer)+'</strong></td><td>'+products+'</td><td class="money">'+combinedMoney(row.totalUSD,row.totalKHR)+'</td><td>'+esc(Array.from(row.statuses).join(', '))+'</td></tr>';
     }).join('');
     const report=document.createElement('div');
     report.className='download-report pdf-page';
@@ -266,8 +265,8 @@ function buildDailySalePdfPages(){
       : '<div class="report-page-info continuation-page"><span></span><span>Page '+(pageIndex+1)+' / '+pageCount+'</span></div>';
     report.innerHTML=
       pageHeader+
-      '<table><colgroup><col style="width:18%"><col style="width:55%"><col style="width:17%"><col style="width:10%"></colgroup>'+
-        '<thead><tr><th>Customer</th><th>Sold Products</th><th>Grand Total</th><th>Status</th></tr></thead>'+
+      '<table><colgroup><col style="width:6%"><col style="width:18%"><col style="width:49%"><col style="width:17%"><col style="width:10%"></colgroup>'+
+        '<thead><tr><th class="center">No.</th><th>Customer</th><th>Sold Products</th><th>Grand Total</th><th>Status</th></tr></thead>'+
         '<tbody>'+rows+'</tbody></table>'+
       (isLast?'<div class="report-totals totals">'+reportTotalsHtml(g)+'</div>':'');
     document.body.appendChild(report);
