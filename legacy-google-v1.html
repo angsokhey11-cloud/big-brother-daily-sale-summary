@@ -54,6 +54,7 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
       <div class="modal-title"><h2>Daily Sale Preview</h2><p id="previewSubtitle"></p></div>
       <div class="modal-actions-right">
         <button class="btn secondary" id="previewSummaryBtn" onclick="openSummaryPreview()" disabled>👁 Preview Summary</button>
+        <button class="btn primary" id="shareTelegramBtn" onclick="shareDailySaleToTelegram()" disabled>📨 Share Telegram</button>
         <button class="btn primary" id="downloadSummaryBtn" onclick="downloadDailySaleSummary()" disabled>⬇ Download PDF</button>
         <button class="btn primary" id="downloadPictureBtn" onclick="downloadDailySalePicture()" disabled>🖼 Download Picture</button>
         <button class="btn secondary" onclick="closePreview()">✕ Close</button>
@@ -218,6 +219,7 @@ async function openPreview(key){
   renderPreviewTotals(g);
   currentCustomerRows=[];
   $('previewSummaryBtn').disabled=true;
+  $('shareTelegramBtn').disabled=true;
   $('downloadSummaryBtn').disabled=true;
   $('downloadPictureBtn').disabled=true;
   $('previewOverlay').classList.remove('hidden');
@@ -229,6 +231,7 @@ async function openPreview(key){
     currentCustomerRows=buildCustomerRows(details.length?details:g.invoices);
     renderCustomerRows();
     $('previewSummaryBtn').disabled=false;
+    $('shareTelegramBtn').disabled=false;
     $('downloadSummaryBtn').disabled=false;
     $('downloadPictureBtn').disabled=false;
   }catch(error){
@@ -320,6 +323,58 @@ async function renderReportCanvas(report){
   if(typeof window.html2canvas!=='function')throw new Error('Picture library is not ready. Please try again.');
   if(document.fonts&&document.fonts.ready)await document.fonts.ready;
   return window.html2canvas(report,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});
+}
+async function shareDailySaleToTelegram(){
+  if(!currentGroup||!currentCustomerRows.length)return;
+  const g=currentGroup;
+  const pageCount=Math.ceil(currentCustomerRows.length/15);
+  if(!confirm('SHARE DAILY SALE TO TELEGRAM\n\nLocation: '+g.locationCode+'\nDate: '+g.saleDate+'\nInvoices: '+g.invoiceCount+'\nPictures: '+pageCount+'\n\nSend now?'))return;
+
+  const btn=$('shareTelegramBtn');
+  const old=btn.textContent;
+  btn.disabled=true;
+  btn.textContent='Preparing Pictures…';
+  let pages=[];
+
+  try{
+    pages=buildDailySalePdfPages();
+    if(!pages.length)throw new Error('No Daily Sale rows to share.');
+    if(pages.length>30)throw new Error('Too many report pictures to send at once.');
+
+    const images=[];
+    for(let i=0;i<pages.length;i++){
+      btn.textContent='Preparing '+(i+1)+'/'+pages.length+'…';
+      const canvas=await renderReportCanvas(pages[i]);
+      const dataUrl=canvas.toDataURL('image/jpeg',0.90);
+      const comma=dataUrl.indexOf(',');
+      if(comma<0)throw new Error('Could not prepare Telegram picture.');
+      images.push({
+        page:i+1,
+        mime:'image/jpeg',
+        data:dataUrl.slice(comma+1)
+      });
+    }
+
+    btn.textContent='Sending Telegram…';
+    const result=await api({
+      action:'shareDailySaleTelegram',
+      locationCode:g.locationCode,
+      saleDate:g.saleDate,
+      salesman:g.salesman,
+      invoiceRange:g.invoiceRange,
+      invoiceCount:g.invoiceCount,
+      images:images
+    });
+
+    alert((result&&result.message?result.message:'Daily Sale pictures sent to Telegram.')+'\n\nPictures: '+pages.length);
+  }catch(error){
+    console.error(error);
+    alert(error.message||'Could not share Daily Sale pictures to Telegram.');
+  }finally{
+    pages.forEach(function(page){if(page&&page.parentNode)page.parentNode.removeChild(page)});
+    btn.disabled=false;
+    btn.textContent=old;
+  }
 }
 async function downloadDailySaleSummary(){
   if(!currentGroup||!currentCustomerRows.length)return;
