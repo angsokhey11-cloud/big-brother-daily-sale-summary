@@ -8,9 +8,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f4f7fb;--card:#fff;--line:#dfe6ef;--text:#17304f;--muted:#6d7d91;--blue:#1f5fbf;--blue2:#174b98;--green:#198754;--amber:#b67a00;--red:#c93c46;--shadow:0 10px 28px rgba(20,48,82,.08)}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}body{padding:20px}.wrap{max-width:1500px;margin:0 auto}.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:16px}.topbar h1{margin:0 0 5px;font-size:28px}.subtitle{margin:0;color:var(--muted)}.pill{display:inline-flex;align-items:center;padding:8px 12px;border:1px solid #c9d8ec;border-radius:999px;background:#edf5ff;color:#245da8;font-size:12px;font-weight:800}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:var(--shadow)}.card small{display:block;color:var(--muted);font-weight:800;margin-bottom:7px}.card strong{font-size:23px}.panel{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}.filters{display:grid;grid-template-columns:1fr 1fr 1.1fr 1.1fr auto auto;gap:10px;padding:14px;border-bottom:1px solid var(--line)}input,select{width:100%;border:1px solid #cbd6e3;border-radius:9px;padding:10px 11px;font:inherit;color:var(--text);background:#fff}.btn{border:0;border-radius:9px;padding:10px 14px;font-weight:800;cursor:pointer}.btn.primary{background:var(--blue);color:#fff}.btn.primary:hover{background:var(--blue2)}.btn.secondary{background:#eef3f8;color:#284761}.btn:disabled{opacity:.55;cursor:not-allowed}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:1260px}th,td{padding:11px 10px;border-bottom:1px solid #e7edf4;text-align:left;font-size:13px;white-space:nowrap}th{background:#f7f9fc;color:#53657a;font-size:12px;position:sticky;top:0;z-index:1}tbody tr:hover{background:#f9fbfe}.money{text-align:right;font-variant-numeric:tabular-nums}.center{text-align:center}.empty{text-align:center;color:var(--muted);padding:30px}.foot{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 14px;color:var(--muted);font-size:12px}.daily-key{font-weight:900;color:#174b98}.warn{color:var(--red);font-weight:800}.overlay{position:fixed;inset:0;background:rgba(10,27,48,.68);display:flex;align-items:center;justify-content:center;padding:18px;z-index:9999}.overlay.hidden{display:none}.modal{width:min(1320px,97vw);max-height:95vh;overflow:auto;background:#eef2f7;border-radius:16px;padding:16px;box-shadow:0 25px 70px rgba(0,0,0,.3)}.modal-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;position:sticky;top:0;z-index:5;background:#eef2f7;padding:2px 0 10px}.modal-title h2{margin:0 0 4px;font-size:22px}.modal-title p{margin:0;color:var(--muted);font-size:12px}.detail-card{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px;box-shadow:var(--shadow)}.preview-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.meta-box{border:1px solid var(--line);border-radius:10px;padding:10px 12px}.meta-box small{display:block;color:var(--muted);font-weight:800;margin-bottom:4px}.meta-box strong{font-size:15px}.preview-table{min-width:1180px}.preview-table td,.preview-table th{font-size:12px}.totals{margin-top:16px;margin-left:auto;width:min(560px,100%);border-top:3px solid #2456a6;padding-top:7px}.total-row{display:flex;justify-content:space-between;gap:16px;padding:7px 8px;border-bottom:1px solid #e2e8f0;font-size:13px}.total-row strong{white-space:nowrap}.total-row.key{background:#eef5ff;color:#143d78;font-size:15px;font-weight:900}.total-row.recv{color:#9a6100}.invoice-overlay .modal{width:min(1050px,96vw)}.invoice-sheet{background:#fff;border:1px solid #9aa8b8;padding:28px 30px;color:#222;max-width:794px;margin:0 auto}.inv-header{display:flex;justify-content:space-between;gap:20px}.inv-brand{font-size:14px;line-height:1.5}.inv-brand h1{margin:0;color:#174a91;font-size:22px;letter-spacing:1px}.inv-currency{text-align:right;font-size:12px}.inv-line{border-top:2px solid #222;margin:10px 0 16px}.inv-title{text-align:center;font-size:30px;font-weight:900;color:#2867b2;margin-bottom:18px}.inv-bill{display:grid;grid-template-columns:1fr 220px;gap:20px;margin-bottom:18px;font-size:13px;line-height:1.5}.inv-no{text-align:right;color:#2867b2;font-weight:800;font-size:20px}.inv-items{min-width:0!important;table-layout:fixed}.inv-items th{position:static;background:#4472b9;color:#fff}.inv-items th,.inv-items td{border:1px solid #999;padding:7px;font-size:12px;white-space:normal}.inv-summary{width:320px;margin:14px 0 0 auto}.inv-summary-row{display:flex;justify-content:space-between;gap:15px;padding:6px 8px;border-bottom:1px solid #c7ced8}.inv-summary-row.grand{background:#4472b9;color:#fff;font-weight:900}.statusbar{display:none;margin-bottom:12px;padding:10px 12px;border-radius:9px;background:#fff0f1;color:var(--red);font-size:12px;font-weight:700}.statusbar.show{display:block}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}body{padding:20px}.wrap{max-width:1500px;margin:0 auto}.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:16px}.topbar h1{margin:0 0 5px;font-size:28px}.subtitle{margin:0;color:var(--muted)}.pill{display:inline-flex;align-items:center;padding:8px 12px;border:1px solid #c9d8ec;border-radius:999px;background:#edf5ff;color:#245da8;font-size:12px;font-weight:800}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:var(--shadow)}.card small{display:block;color:var(--muted);font-weight:800;margin-bottom:7px}.card strong{font-size:23px}.panel{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}.filters{display:grid;grid-template-columns:1fr 1fr 1.1fr 1.1fr auto auto;gap:10px;padding:14px;border-bottom:1px solid var(--line)}input,select{width:100%;border:1px solid #cbd6e3;border-radius:9px;padding:10px 11px;font:inherit;color:var(--text);background:#fff}.btn{border:0;border-radius:9px;padding:10px 14px;font-weight:800;cursor:pointer}.btn.primary{background:var(--blue);color:#fff}.btn.primary:hover{background:var(--blue2)}.btn.secondary{background:#eef3f8;color:#284761}.btn:disabled{opacity:.55;cursor:not-allowed}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:1260px}th,td{padding:11px 10px;border-bottom:1px solid #e7edf4;text-align:left;font-size:13px;white-space:nowrap}th{background:#f7f9fc;color:#53657a;font-size:12px;position:sticky;top:0;z-index:1}tbody tr:hover{background:#f9fbfe}.money{text-align:right;font-variant-numeric:tabular-nums}.center{text-align:center}.empty{text-align:center;color:var(--muted);padding:30px}.foot{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 14px;color:var(--muted);font-size:12px}.daily-key{font-weight:900;color:#174b98}.warn{color:var(--red);font-weight:800}.overlay{position:fixed;inset:0;background:rgba(10,27,48,.68);display:flex;align-items:center;justify-content:center;padding:18px;z-index:9999}.overlay.hidden{display:none}.modal{width:min(1320px,97vw);max-height:95vh;overflow:auto;background:#eef2f7;border-radius:16px;padding:16px;box-shadow:0 25px 70px rgba(0,0,0,.3)}.modal-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;position:sticky;top:0;z-index:5;background:#eef2f7;padding:2px 0 10px}.modal-title h2{margin:0 0 4px;font-size:22px}.modal-title p{margin:0;color:var(--muted);font-size:12px}.detail-card{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px;box-shadow:var(--shadow)}.preview-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.meta-box{border:1px solid var(--line);border-radius:10px;padding:10px 12px}.meta-box small{display:block;color:var(--muted);font-weight:800;margin-bottom:4px}.meta-box strong{font-size:15px}.preview-table{min-width:1080px}.preview-table td,.preview-table th{font-size:12px}.modal-actions-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.sold-products{white-space:normal!important;min-width:340px;max-width:560px;line-height:1.55}.invoice-picker{width:auto;min-width:125px;padding:8px 9px;border-radius:8px;font-size:12px}.download-report{position:fixed;left:-12000px;top:0;width:1120px;background:#fff;color:#17304f;padding:30px;font-family:Arial,Helvetica,'Noto Sans Khmer',sans-serif}.download-report h1{margin:0;color:#174b98;font-size:28px}.download-report .report-sub{color:#6d7d91;margin:5px 0 18px}.download-report .report-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}.download-report .report-meta>div{border:1px solid #dfe6ef;border-radius:9px;padding:9px 10px}.download-report table{min-width:0;width:100%;border-collapse:collapse}.download-report th,.download-report td{position:static;white-space:normal;border:1px solid #dfe6ef;padding:8px;font-size:12px;vertical-align:top}.download-report th{background:#f4f7fb}.download-report .report-totals{margin:18px 0 0 auto;width:520px;max-width:100%}.totals{margin-top:16px;margin-left:auto;width:min(560px,100%);border-top:3px solid #2456a6;padding-top:7px}.total-row{display:flex;justify-content:space-between;gap:16px;padding:7px 8px;border-bottom:1px solid #e2e8f0;font-size:13px}.total-row strong{white-space:nowrap}.total-row.key{background:#eef5ff;color:#143d78;font-size:15px;font-weight:900}.total-row.recv{color:#9a6100}.invoice-overlay .modal{width:min(1050px,96vw)}.invoice-sheet{background:#fff;border:1px solid #9aa8b8;padding:28px 30px;color:#222;max-width:794px;margin:0 auto}.inv-header{display:flex;justify-content:space-between;gap:20px}.inv-brand{font-size:14px;line-height:1.5}.inv-brand h1{margin:0;color:#174a91;font-size:22px;letter-spacing:1px}.inv-currency{text-align:right;font-size:12px}.inv-line{border-top:2px solid #222;margin:10px 0 16px}.inv-title{text-align:center;font-size:30px;font-weight:900;color:#2867b2;margin-bottom:18px}.inv-bill{display:grid;grid-template-columns:1fr 220px;gap:20px;margin-bottom:18px;font-size:13px;line-height:1.5}.inv-no{text-align:right;color:#2867b2;font-weight:800;font-size:20px}.inv-items{min-width:0!important;table-layout:fixed}.inv-items th{position:static;background:#4472b9;color:#fff}.inv-items th,.inv-items td{border:1px solid #999;padding:7px;font-size:12px;white-space:normal}.inv-summary{width:320px;margin:14px 0 0 auto}.inv-summary-row{display:flex;justify-content:space-between;gap:15px;padding:6px 8px;border-bottom:1px solid #c7ced8}.inv-summary-row.grand{background:#4472b9;color:#fff;font-weight:900}.statusbar{display:none;margin-bottom:12px;padding:10px 12px;border-radius:9px;background:#fff0f1;color:var(--red);font-size:12px;font-weight:700}.statusbar.show{display:block}
 @media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:1fr 1fr}.preview-meta{grid-template-columns:1fr 1fr}.topbar{align-items:flex-start;flex-direction:column}}
-@media(max-width:560px){body{padding:10px}.cards{grid-template-columns:1fr 1fr;gap:8px}.card{padding:11px}.card strong{font-size:18px}.filters{grid-template-columns:1fr}.preview-meta{grid-template-columns:1fr}.modal-actions{align-items:flex-start;flex-direction:column}.invoice-sheet{padding:15px 10px}.inv-bill{grid-template-columns:1fr 120px}.inv-title{font-size:22px}}
+@media(max-width:560px){body{padding:10px}.cards{grid-template-columns:1fr 1fr;gap:8px}.card{padding:11px}.card strong{font-size:18px}.filters{grid-template-columns:1fr}.preview-meta{grid-template-columns:1fr}.modal-actions{align-items:flex-start;flex-direction:column}.modal-actions-right{width:100%}.modal-actions-right .btn{flex:1}.sold-products{min-width:280px}.invoice-sheet{padding:15px 10px}.inv-bill{grid-template-columns:1fr 120px}.inv-title{font-size:22px}}
 
 /* Khmer glyph fallback; preserve existing English sizes and layout. */
 html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer',sans-serif}
@@ -52,11 +52,14 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
   <div class="modal">
     <div class="modal-actions">
       <div class="modal-title"><h2>Daily Sale Preview</h2><p id="previewSubtitle"></p></div>
-      <button class="btn secondary" onclick="closePreview()">✕ Close</button>
+      <div class="modal-actions-right">
+        <button class="btn primary" id="downloadSummaryBtn" onclick="downloadDailySaleSummary()" disabled>⬇ Download Summary</button>
+        <button class="btn secondary" onclick="closePreview()">✕ Close</button>
+      </div>
     </div>
     <div class="detail-card">
       <div class="preview-meta" id="previewMeta"></div>
-      <div class="tablewrap"><table class="preview-table"><thead><tr><th>Invoice No</th><th>Customer</th><th>Payment</th><th>Currency</th><th class="money">Exchange Rate</th><th class="money">Grand Total</th><th class="money">Outstanding</th><th>Status</th><th>Action</th></tr></thead><tbody id="previewBody"></tbody></table></div>
+      <div class="tablewrap"><table class="preview-table"><thead><tr><th>Customer</th><th>Sold Products</th><th>Payment</th><th class="money">Grand Total</th><th class="money">Outstanding</th><th>Status</th><th>Action</th></tr></thead><tbody id="previewBody"></tbody></table></div>
       <div class="totals" id="previewTotals"></div>
     </div>
   </div>
@@ -69,10 +72,12 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 const SALES_API="https://script.google.com/macros/s/AKfycbyM5mUlz5SeMZ_oPJCo2FgLkPEcodAQ7wPl5wxAdrvfqLvsZLaHxiOtS02L1Q3ZRA3D/exec";
 const $=id=>document.getElementById(id);
-let allInvoices=[],groups=[],filteredGroups=[],currentGroup=null;
+let allInvoices=[],groups=[],filteredGroups=[],currentGroup=null,currentCustomerRows=[];
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function num(v){const n=Number(v);return Number.isFinite(n)?n:0}
 function dateOnly(v){return String(v||'').slice(0,10)}
@@ -104,9 +109,142 @@ function renderGroups(){
 }
 function clearFilters(){$('dateFrom').value='';$('dateTo').value='';$('salesmanFilter').value='';$('locationFilter').value='';applyFilters()}
 async function loadInvoices(manual=false){const btn=$('refreshBtn');if(manual){btn.disabled=true;btn.textContent='Refreshing…'}showError('');$('syncStatus').textContent='Loading Invoice History…';try{const d=await api({action:'invoiceList'});allInvoices=Array.isArray(d.invoices)?d.invoices:[];buildGroups();$('syncStatus').textContent=`Updated • ${allInvoices.length} invoices`}catch(e){showError(e.message||'Could not load invoice history.');$('summaryBody').innerHTML='<tr><td colspan="11" class="empty">Could not load Daily Sale Summary.</td></tr>'; $('syncStatus').textContent='Load failed'}finally{if(manual){btn.disabled=false;btn.textContent='↻ Refresh'}}}
-function openPreview(key){currentGroup=groups.find(g=>g.key===key);if(!currentGroup)return;const g=currentGroup;$('previewSubtitle').textContent=`${g.saleDate} • ${g.salesman} • ${g.locationCode}`;$('previewMeta').innerHTML=`<div class="meta-box"><small>Sale Date</small><strong>${esc(g.saleDate)}</strong></div><div class="meta-box"><small>Salesman</small><strong>${esc(g.salesman)}</strong></div><div class="meta-box"><small>Location Code</small><strong>${esc(g.locationCode)}</strong></div><div class="meta-box"><small>Invoices</small><strong>${g.invoiceCount}</strong></div>`;
-  $('previewBody').innerHTML=g.invoices.map(inv=>{const c=String(inv.currency||'USD').toUpperCase();return `<tr><td><strong>${esc(inv.invoiceNo)}</strong></td><td>${esc(inv.customer)}</td><td>${esc(inv.paymentMethod||'-')}</td><td>${esc(c)}</td><td class="money">${c==='KHR'?(num(inv.exchangeRate)>0?rate(inv.exchangeRate):'<span class="warn">Missing</span>'):'-'}</td><td class="money">${c==='KHR'?khr(inv.grandTotal):usd(inv.grandTotal)}</td><td class="money">${c==='KHR'?khr(inv.outstanding):usd(inv.outstanding)}</td><td>${esc(inv.status||inv.invoiceType||'-')}</td><td><button class="btn secondary" onclick='openInvoicePreview(${JSON.stringify(String(inv.invoiceNo||''))})'>View Invoice</button></td></tr>`}).join('');
-  const converted=g.dailySaleUSD==null?null:(g.totalKHR?g.totalKHR/g.avgRate:0);$('previewTotals').innerHTML=`<div class="total-row"><span>Total Sale in USD</span><strong>${usd(g.totalUSD)}</strong></div><div class="total-row"><span>Total Sale in KHR</span><strong>${khr(g.totalKHR)}</strong></div><div class="total-row"><span>Average KHR Exchange Rate</span><strong class="${g.rateComplete?'':'warn'}">${g.totalKHR?(g.rateComplete?rate(g.avgRate):'Missing Exchange Rate'):'-'}</strong></div><div class="total-row"><span>KHR Converted to USD</span><strong>${converted==null?'—':usd(converted)}</strong></div><div class="total-row key"><span>Daily Sale in USD</span><strong>${g.dailySaleUSD==null?'—':usd(g.dailySaleUSD)}</strong></div><div class="total-row recv"><span>Total Receivable USD</span><strong>${usd(g.recvUSD)}</strong></div><div class="total-row recv"><span>Total Receivable KHR</span><strong>${khr(g.recvKHR)}</strong></div>`;$('previewOverlay').classList.remove('hidden')}
+function moneyForCurrency(v,c){return String(c||'USD').toUpperCase()==='KHR'?khr(v):usd(v)}
+function combinedMoney(usdValue,khrValue){
+  const parts=[];
+  if(num(usdValue)!==0 || num(khrValue)===0) parts.push(usd(usdValue));
+  if(num(khrValue)!==0) parts.push(khr(khrValue));
+  return parts.join(' / ');
+}
+function productLabel(it,c){
+  const name=String(it.productName||it.description||it.productCode||it.sku||'Product').trim()||'Product';
+  const price=num(it.unitPrice!=null?it.unitPrice:(it.price!=null?it.price:it.sellingPrice));
+  return name+' × '+moneyForCurrency(price,c);
+}
+function buildCustomerRows(invoices){
+  const map=new Map();
+  invoices.forEach(function(inv){
+    const customer=String(inv.customer||'-').trim()||'-';
+    const rawKey=String(inv.customerId||inv.customerCode||customer).trim().toLowerCase();
+    if(!map.has(rawKey)){
+      map.set(rawKey,{customer:customer,invoices:[],products:[],productKeys:new Set(),payments:new Set(),statuses:new Set(),totalUSD:0,totalKHR:0,outUSD:0,outKHR:0});
+    }
+    const row=map.get(rawKey);
+    const c=String(inv.currency||'USD').toUpperCase();
+    row.invoices.push(inv);
+    if(c==='KHR'){row.totalKHR+=num(inv.grandTotal);row.outKHR+=num(inv.outstanding)}
+    else{row.totalUSD+=num(inv.grandTotal);row.outUSD+=num(inv.outstanding)}
+    const payment=String(inv.paymentMethod||'-').trim()||'-';
+    row.payments.add(payment);
+    const status=String(inv.status||inv.invoiceType||'-').trim()||'-';
+    row.statuses.add(status);
+    const items=Array.isArray(inv.items)?inv.items:[];
+    items.forEach(function(it){
+      const label=productLabel(it,c);
+      const key=c+'|||'+label.toLowerCase();
+      if(!row.productKeys.has(key)){row.productKeys.add(key);row.products.push(label)}
+    });
+  });
+  return Array.from(map.values()).sort(function(a,b){return a.customer.localeCompare(b.customer)});
+}
+function invoiceActionHtml(row){
+  if(row.invoices.length===1){
+    const no=String(row.invoices[0].invoiceNo||'');
+    return '<button class="btn secondary" onclick=\'openInvoicePreview('+JSON.stringify(no)+')\'>View Invoice</button>';
+  }
+  const opts=row.invoices.map(function(inv){
+    const no=String(inv.invoiceNo||'');
+    return '<option value="'+esc(no)+'">'+esc(no)+'</option>';
+  }).join('');
+  return '<select class="invoice-picker" onchange="if(this.value){openInvoicePreview(this.value);this.selectedIndex=0}"><option value="">View '+row.invoices.length+' Invoices</option>'+opts+'</select>';
+}
+function renderCustomerRows(){
+  if(!currentCustomerRows.length){
+    $('previewBody').innerHTML='<tr><td colspan="7" class="empty">No customer sales found.</td></tr>';
+    return;
+  }
+  $('previewBody').innerHTML=currentCustomerRows.map(function(row){
+    const products=row.products.length?row.products.map(esc).join(', '):'<span class="warn">Product detail unavailable</span>';
+    return '<tr><td><strong>'+esc(row.customer)+'</strong></td><td class="sold-products">'+products+'</td><td>'+esc(Array.from(row.payments).join(', '))+'</td><td class="money">'+combinedMoney(row.totalUSD,row.totalKHR)+'</td><td class="money">'+combinedMoney(row.outUSD,row.outKHR)+'</td><td>'+esc(Array.from(row.statuses).join(', '))+'</td><td>'+invoiceActionHtml(row)+'</td></tr>';
+  }).join('');
+}
+function renderPreviewTotals(g){
+  const converted=g.dailySaleUSD==null?null:(g.totalKHR?g.totalKHR/g.avgRate:0);
+  $('previewTotals').innerHTML='<div class="total-row"><span>Total Sale in USD</span><strong>'+usd(g.totalUSD)+'</strong></div><div class="total-row"><span>Total Sale in KHR</span><strong>'+khr(g.totalKHR)+'</strong></div><div class="total-row"><span>Average KHR Exchange Rate</span><strong class="'+(g.rateComplete?'':'warn')+'">'+(g.totalKHR?(g.rateComplete?rate(g.avgRate):'Missing Exchange Rate'):'-')+'</strong></div><div class="total-row"><span>KHR Converted to USD</span><strong>'+(converted==null?'—':usd(converted))+'</strong></div><div class="total-row key"><span>Daily Sale in USD</span><strong>'+(g.dailySaleUSD==null?'—':usd(g.dailySaleUSD))+'</strong></div><div class="total-row recv"><span>Total Receivable USD</span><strong>'+usd(g.recvUSD)+'</strong></div><div class="total-row recv"><span>Total Receivable KHR</span><strong>'+khr(g.recvKHR)+'</strong></div>';
+}
+async function openPreview(key){
+  currentGroup=groups.find(function(g){return g.key===key});
+  if(!currentGroup)return;
+  const g=currentGroup;
+  $('previewSubtitle').textContent=g.saleDate+' • '+g.salesman+' • '+g.locationCode;
+  $('previewMeta').innerHTML='<div class="meta-box"><small>Sale Date</small><strong>'+esc(g.saleDate)+'</strong></div><div class="meta-box"><small>Salesman</small><strong>'+esc(g.salesman)+'</strong></div><div class="meta-box"><small>Location Code</small><strong>'+esc(g.locationCode)+'</strong></div><div class="meta-box"><small>Invoices</small><strong>'+g.invoiceCount+'</strong></div>';
+  $('previewBody').innerHTML='<tr><td colspan="7" class="empty">Loading customer products…</td></tr>';
+  renderPreviewTotals(g);
+  currentCustomerRows=[];
+  $('downloadSummaryBtn').disabled=true;
+  $('previewOverlay').classList.remove('hidden');
+  try{
+    const invoiceIds=g.invoices.map(function(inv){return String(inv.invoiceId||'').trim()}).filter(Boolean);
+    const d=await api({action:'dailySaleItems',invoiceIds:invoiceIds});
+    if(!currentGroup||currentGroup.key!==key)return;
+    const details=Array.isArray(d.invoices)?d.invoices:[];
+    currentCustomerRows=buildCustomerRows(details.length?details:g.invoices);
+    renderCustomerRows();
+    $('downloadSummaryBtn').disabled=false;
+  }catch(error){
+    console.error(error);
+    if(!currentGroup||currentGroup.key!==key)return;
+    $('previewBody').innerHTML='<tr><td colspan="7" class="empty">Could not load sold products: '+esc(error.message||error)+'</td></tr>';
+  }
+}
+function reportTotalsHtml(g){
+  const converted=g.dailySaleUSD==null?null:(g.totalKHR?g.totalKHR/g.avgRate:0);
+  return '<div class="total-row"><span>Total Sale in USD</span><strong>'+usd(g.totalUSD)+'</strong></div><div class="total-row"><span>Total Sale in KHR</span><strong>'+khr(g.totalKHR)+'</strong></div><div class="total-row"><span>KHR Converted to USD</span><strong>'+(converted==null?'—':usd(converted))+'</strong></div><div class="total-row key"><span>Daily Sale in USD</span><strong>'+(g.dailySaleUSD==null?'—':usd(g.dailySaleUSD))+'</strong></div><div class="total-row recv"><span>Total Receivable USD</span><strong>'+usd(g.recvUSD)+'</strong></div><div class="total-row recv"><span>Total Receivable KHR</span><strong>'+khr(g.recvKHR)+'</strong></div>';
+}
+async function downloadDailySaleSummary(){
+  if(!currentGroup||!currentCustomerRows.length)return;
+  const btn=$('downloadSummaryBtn');
+  const old=btn.textContent;
+  btn.disabled=true;
+  btn.textContent='Preparing PDF…';
+  let report=null;
+  try{
+    if(typeof window.html2canvas!=='function'||!window.jspdf||!window.jspdf.jsPDF)throw new Error('PDF library is not ready. Please try again.');
+    const g=currentGroup;
+    const rows=currentCustomerRows.map(function(row){
+      const products=row.products.length?row.products.map(esc).join(', '):'-';
+      return '<tr><td><strong>'+esc(row.customer)+'</strong></td><td>'+products+'</td><td>'+esc(Array.from(row.payments).join(', '))+'</td><td class="money">'+combinedMoney(row.totalUSD,row.totalKHR)+'</td><td class="money">'+combinedMoney(row.outUSD,row.outKHR)+'</td><td>'+esc(Array.from(row.statuses).join(', '))+'</td></tr>';
+    }).join('');
+    report=document.createElement('div');
+    report.className='download-report';
+    report.innerHTML='<h1>BIG BROTHER</h1><div class="report-sub">Daily Sale Summary</div><div class="report-meta"><div><small>Sale Date</small><br><strong>'+esc(g.saleDate)+'</strong></div><div><small>Salesman</small><br><strong>'+esc(g.salesman)+'</strong></div><div><small>Location</small><br><strong>'+esc(g.locationCode)+'</strong></div><div><small>Invoices</small><br><strong>'+g.invoiceCount+'</strong></div></div><table><thead><tr><th>Customer</th><th>Sold Products</th><th>Payment</th><th>Grand Total</th><th>Outstanding</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table><div class="report-totals totals">'+reportTotalsHtml(g)+'</div>';
+    document.body.appendChild(report);
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    const canvas=await window.html2canvas(report,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});
+    const jsPDF=window.jspdf.jsPDF;
+    const pdf=new jsPDF('p','mm','a4');
+    const margin=8,pageW=210,pageH=297,contentH=pageH-(margin*2),imgW=pageW-(margin*2);
+    const imgH=canvas.height*imgW/canvas.width;
+    const data=canvas.toDataURL('image/jpeg',0.96);
+    let shown=0;
+    pdf.addImage(data,'JPEG',margin,margin,imgW,imgH,undefined,'FAST');
+    shown+=contentH;
+    while(shown<imgH){
+      pdf.addPage();
+      pdf.addImage(data,'JPEG',margin,margin-shown,imgW,imgH,undefined,'FAST');
+      shown+=contentH;
+    }
+    const safe=function(v){return String(v||'').replace(/[^a-z0-9_-]+/gi,'_').replace(/^_+|_+$/g,'')};
+    pdf.save('BIG_BROTHER_Daily_Sale_'+safe(g.saleDate)+'_'+safe(g.salesman)+'_'+safe(g.locationCode)+'.pdf');
+  }catch(error){
+    console.error(error);
+    alert(error.message||'Could not download Daily Sale Summary.');
+  }finally{
+    if(report&&report.parentNode)report.parentNode.removeChild(report);
+    btn.disabled=false;
+    btn.textContent=old;
+  }
+}
 function closePreview(){$('previewOverlay').classList.add('hidden');currentGroup=null}
 async function openInvoicePreview(invoiceNo){$('invoiceOverlay').classList.remove('hidden');$('invoicePreviewSubtitle').textContent=invoiceNo;$('invoiceSheet').innerHTML='<div class="empty">Loading invoice...</div>';try{const d=await api({action:'invoiceDetail',invoiceNo});const inv=d.invoice||d;if(!inv||!inv.invoiceNo)throw new Error('Invoice detail was not returned.');renderInvoice(inv)}catch(e){$('invoiceSheet').innerHTML=`<div class="empty">${esc(e.message||'Could not load invoice.')}</div>`}}
 function closeInvoicePreview(){$('invoiceOverlay').classList.add('hidden')}
