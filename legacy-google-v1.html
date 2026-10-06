@@ -162,7 +162,12 @@ function buildCustomerRows(invoices){
     row.products=Array.from(row.productMap.values()).map(productLabel);
     return row;
   });
-  return rows.sort(function(a,b){return a.customer.localeCompare(b.customer)});
+  return rows.sort(function(a,b){
+    const aNo=a.invoices.length?String(a.invoices[0].invoiceNo||''):'';
+    const bNo=b.invoices.length?String(b.invoices[0].invoiceNo||''):'';
+    const byInvoice=invoiceCompare(aNo,bNo);
+    return byInvoice!==0?byInvoice:a.customer.localeCompare(b.customer);
+  });
 }
 function invoiceActionHtml(row){
   if(row.invoices.length===1){
