@@ -223,18 +223,18 @@ async function openPreview(key){
 }
 function reportTotalsHtml(g){
   const converted=g.dailySaleUSD==null?null:(g.totalKHR?g.totalKHR/g.avgRate:0);
-  return '<div class="total-row"><span>Total Sale in USD</span><strong>'+usd(g.totalUSD)+'</strong></div><div class="total-row"><span>Total Sale in KHR</span><strong>'+khr(g.totalKHR)+'</strong></div><div class="total-row"><span>KHR Converted to USD</span><strong>'+(converted==null?'—':usd(converted))+'</strong></div><div class="total-row key"><span>Daily Sale in USD</span><strong>'+(g.dailySaleUSD==null?'—':usd(g.dailySaleUSD))+'</strong></div><div class="total-row recv"><span>Total Receivable USD</span><strong>'+usd(g.recvUSD)+'</strong></div><div class="total-row recv"><span>Total Receivable KHR</span><strong>'+khr(g.recvKHR)+'</strong></div>';
+  return '<div class="total-row"><span>Total Sale in USD</span><strong>'+usd(g.totalUSD)+'</strong></div><div class="total-row"><span>Total Sale in KHR</span><strong>'+khr(g.totalKHR)+'</strong></div><div class="total-row"><span>KHR Converted to USD</span><strong>'+(converted==null?'—':usd(converted))+'</strong></div><div class="total-row key"><span>Daily Sale in USD</span><strong>'+(g.dailySaleUSD==null?'—':usd(g.dailySaleUSD))+'</strong></div>';
 }
 function buildDailySaleReport(){
   if(!currentGroup||!currentCustomerRows.length)return null;
   const g=currentGroup;
   const rows=currentCustomerRows.map(function(row){
     const products=row.products.length?row.products.map(esc).join(', '):'-';
-    return '<tr><td><strong>'+esc(row.customer)+'</strong></td><td>'+products+'</td><td>'+esc(Array.from(row.payments).join(', '))+'</td><td class="money">'+combinedMoney(row.totalUSD,row.totalKHR)+'</td><td class="money">'+combinedMoney(row.outUSD,row.outKHR)+'</td><td>'+esc(Array.from(row.statuses).join(', '))+'</td></tr>';
+    return '<tr><td><strong>'+esc(row.customer)+'</strong></td><td>'+products+'</td><td class="money">'+combinedMoney(row.totalUSD,row.totalKHR)+'</td><td>'+esc(Array.from(row.statuses).join(', '))+'</td></tr>';
   }).join('');
   const report=document.createElement('div');
   report.className='download-report';
-  report.innerHTML='<h1>BIG BROTHER</h1><div class="report-sub">Daily Sale Summary</div><div class="report-meta"><div><small>Sale Date</small><br><strong>'+esc(g.saleDate)+'</strong></div><div><small>Salesman</small><br><strong>'+esc(g.salesman)+'</strong></div><div><small>Location</small><br><strong>'+esc(g.locationCode)+'</strong></div><div><small>Invoice Range</small><br><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div></div><table><thead><tr><th>Customer</th><th>Sold Products</th><th>Payment</th><th>Grand Total</th><th>Outstanding</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table><div class="report-totals totals">'+reportTotalsHtml(g)+'</div>';
+  report.innerHTML='<h1>BIG BROTHER</h1><div class="report-sub">Daily Sale Summary</div><div class="report-meta"><div><small>Sale Date</small><br><strong>'+esc(g.saleDate)+'</strong></div><div><small>Salesman</small><br><strong>'+esc(g.salesman)+'</strong></div><div><small>Location</small><br><strong>'+esc(g.locationCode)+'</strong></div><div><small>Invoice Range</small><br><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div></div><table><colgroup><col style="width:18%"><col style="width:54%"><col style="width:17%"><col style="width:11%"></colgroup><thead><tr><th>Customer</th><th>Sold Products</th><th>Grand Total</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table><div class="report-totals totals">'+reportTotalsHtml(g)+'</div>';
   document.body.appendChild(report);
   return report;
 }
