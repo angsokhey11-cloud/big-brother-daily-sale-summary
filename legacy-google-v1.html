@@ -40,7 +40,7 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
     </div>
     <div class="tablewrap">
       <table>
-        <thead><tr><th>Sale Date</th><th>Salesman</th><th>Location Code</th><th class="center">Invoices</th><th class="money">Total Sale USD</th><th class="money">Total Sale KHR</th><th class="money">Avg. KHR Rate</th><th class="money">Daily Sale in USD</th><th class="money">Receivable USD</th><th class="money">Receivable KHR</th><th>Action</th></tr></thead>
+        <thead><tr><th>Sale Date</th><th>Salesman</th><th>Location Code</th><th class="center">Invoice Range</th><th class="money">Total Sale USD</th><th class="money">Total Sale KHR</th><th class="money">Avg. KHR Rate</th><th class="money">Daily Sale in USD</th><th class="money">Receivable USD</th><th class="money">Receivable KHR</th><th>Action</th></tr></thead>
         <tbody id="summaryBody"><tr><td colspan="11" class="empty">Loading Daily Sale Summary...</td></tr></tbody>
       </table>
     </div>
@@ -53,7 +53,8 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
     <div class="modal-actions">
       <div class="modal-title"><h2>Daily Sale Preview</h2><p id="previewSubtitle"></p></div>
       <div class="modal-actions-right">
-        <button class="btn primary" id="downloadSummaryBtn" onclick="downloadDailySaleSummary()" disabled>⬇ Download Summary</button>
+        <button class="btn primary" id="downloadSummaryBtn" onclick="downloadDailySaleSummary()" disabled>⬇ Download PDF</button>
+        <button class="btn primary" id="downloadPictureBtn" onclick="downloadDailySalePicture()" disabled>🖼 Download Picture</button>
         <button class="btn secondary" onclick="closePreview()">✕ Close</button>
       </div>
     </div>
@@ -87,6 +88,14 @@ function rate(v){return num(v).toLocaleString(undefined,{minimumFractionDigits:0
 function showError(msg){$('errorBox').textContent=msg||'';$('errorBox').classList.toggle('show',!!msg)}
 async function api(params){const res=await fetch(SALES_API+'?'+new URLSearchParams(params).toString(),{cache:'no-store'});if(!res.ok)throw new Error('Sales Database returned HTTP '+res.status);const d=await res.json();if(!d||d.success===false)throw new Error(d?.error||'Sales Database returned an error.');return d}
 function groupKey(inv){return [dateOnly(inv.invoiceDate),String(inv.salesperson||'').trim(),String(inv.locationCode||'').trim()].join('|||')}
+function invoiceCompare(a,b){return String(a||'').localeCompare(String(b||''),undefined,{numeric:true,sensitivity:'base'})}
+function getInvoiceRange(invoices){
+  const sorted=(invoices||[]).slice().sort(function(a,b){return invoiceCompare(a.invoiceNo,b.invoiceNo)});
+  if(!sorted.length)return '-';
+  const first=String(sorted[0].invoiceNo||'').trim()||'-';
+  const last=String(sorted[sorted.length-1].invoiceNo||'').trim()||'-';
+  return first===last?first:first+' → '+last;
+}
 function calculateGroup(list){
   const first=list[0]||{};let totalUSD=0,totalKHR=0,recvUSD=0,recvKHR=0;const khrRates=[];let khrMissingRate=false;
   list.forEach(inv=>{const c=String(inv.currency||'USD').toUpperCase();const grand=num(inv.grandTotal),out=num(inv.outstanding);if(c==='KHR'){totalKHR+=grand;recvKHR+=out;const r=num(inv.exchangeRate);if(r>0)khrRates.push(r);else khrMissingRate=true}else{totalUSD+=grand;recvUSD+=out}});
@@ -95,7 +104,8 @@ function calculateGroup(list){
   const rateComplete=!hasKHR || (!khrMissingRate && khrRates.length===list.filter(i=>String(i.currency||'').toUpperCase()==='KHR').length);
   const convertedKHR=(hasKHR&&avgRate>0&&rateComplete)?totalKHR/avgRate:0;
   const dailySaleUSD=rateComplete?(totalUSD+convertedKHR):null;
-  return {key:groupKey(first),saleDate:dateOnly(first.invoiceDate),salesman:String(first.salesperson||'').trim()||'-',locationCode:String(first.locationCode||'').trim()||'-',invoiceCount:list.length,totalUSD,totalKHR,recvUSD,recvKHR,avgRate,rateComplete,dailySaleUSD,invoices:list.slice().sort((a,b)=>String(a.invoiceNo).localeCompare(String(b.invoiceNo)))};
+  const sortedInvoices=list.slice().sort(function(a,b){return invoiceCompare(a.invoiceNo,b.invoiceNo)});
+  return {key:groupKey(first),saleDate:dateOnly(first.invoiceDate),salesman:String(first.salesperson||'').trim()||'-',locationCode:String(first.locationCode||'').trim()||'-',invoiceCount:list.length,invoiceRange:getInvoiceRange(sortedInvoices),totalUSD,totalKHR,recvUSD,recvKHR,avgRate,rateComplete,dailySaleUSD,invoices:sortedInvoices};
 }
 function buildGroups(){const map=new Map();allInvoices.forEach(inv=>{const key=groupKey(inv);if(!map.has(key))map.set(key,[]);map.get(key).push(inv)});groups=[...map.values()].map(calculateGroup).sort((a,b)=>b.saleDate.localeCompare(a.saleDate)||a.salesman.localeCompare(b.salesman)||a.locationCode.localeCompare(b.locationCode));populateFilters();applyFilters()}
 function populateFilters(){const sales=[...new Set(groups.map(g=>g.salesman).filter(v=>v&&v!=='-'))].sort();const locs=[...new Set(groups.map(g=>g.locationCode).filter(v=>v&&v!=='-'))].sort();const s=$('salesmanFilter'),l=$('locationFilter'),sv=s.value,lv=l.value;s.innerHTML='<option value="">All Salesmen</option>'+sales.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');l.innerHTML='<option value="">All Locations</option>'+locs.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');if(sales.includes(sv))s.value=sv;if(locs.includes(lv))l.value=lv}
@@ -105,7 +115,7 @@ function renderGroups(){
   const totalUsd=filteredGroups.reduce((x,g)=>x+g.totalUSD,0),totalKhr=filteredGroups.reduce((x,g)=>x+g.totalKHR,0);const allComplete=filteredGroups.every(g=>g.rateComplete);const dailyUsd=filteredGroups.reduce((x,g)=>x+(g.dailySaleUSD==null?0:g.dailySaleUSD),0);
   $('cardUsd').textContent=usd(totalUsd);$('cardKhr').textContent=khr(totalKhr);$('cardDailyUsd').textContent=allComplete?usd(dailyUsd):'Rate Missing';
   if(!filteredGroups.length){$('summaryBody').innerHTML='<tr><td colspan="11" class="empty">No Daily Sale groups found.</td></tr>';return}
-  $('summaryBody').innerHTML=filteredGroups.map(g=>`<tr><td><strong>${esc(g.saleDate)}</strong></td><td>${esc(g.salesman)}</td><td><strong>${esc(g.locationCode)}</strong></td><td class="center">${g.invoiceCount}</td><td class="money">${usd(g.totalUSD)}</td><td class="money">${khr(g.totalKHR)}</td><td class="money ${g.rateComplete?'':'warn'}">${g.totalKHR? (g.rateComplete?rate(g.avgRate):'Missing Rate'):'-'}</td><td class="money daily-key">${g.dailySaleUSD==null?'—':usd(g.dailySaleUSD)}</td><td class="money">${usd(g.recvUSD)}</td><td class="money">${khr(g.recvKHR)}</td><td><button class="btn primary" onclick='openPreview(${JSON.stringify(g.key)})'>Preview</button></td></tr>`).join('')
+  $('summaryBody').innerHTML=filteredGroups.map(g=>`<tr><td><strong>${esc(g.saleDate)}</strong></td><td>${esc(g.salesman)}</td><td><strong>${esc(g.locationCode)}</strong></td><td class="center"><strong>${esc(g.invoiceRange)}</strong><br><small>${g.invoiceCount} invoices</small></td><td class="money">${usd(g.totalUSD)}</td><td class="money">${khr(g.totalKHR)}</td><td class="money ${g.rateComplete?'':'warn'}">${g.totalKHR? (g.rateComplete?rate(g.avgRate):'Missing Rate'):'-'}</td><td class="money daily-key">${g.dailySaleUSD==null?'—':usd(g.dailySaleUSD)}</td><td class="money">${usd(g.recvUSD)}</td><td class="money">${khr(g.recvKHR)}</td><td><button class="btn primary" onclick='openPreview(${JSON.stringify(g.key)})'>Preview</button></td></tr>`).join('')
 }
 function clearFilters(){$('dateFrom').value='';$('dateTo').value='';$('salesmanFilter').value='';$('locationFilter').value='';applyFilters()}
 async function loadInvoices(manual=false){const btn=$('refreshBtn');if(manual){btn.disabled=true;btn.textContent='Refreshing…'}showError('');$('syncStatus').textContent='Loading Invoice History…';try{const d=await api({action:'invoiceList'});allInvoices=Array.isArray(d.invoices)?d.invoices:[];buildGroups();$('syncStatus').textContent=`Updated • ${allInvoices.length} invoices`}catch(e){showError(e.message||'Could not load invoice history.');$('summaryBody').innerHTML='<tr><td colspan="11" class="empty">Could not load Daily Sale Summary.</td></tr>'; $('syncStatus').textContent='Load failed'}finally{if(manual){btn.disabled=false;btn.textContent='↻ Refresh'}}}
@@ -116,36 +126,43 @@ function combinedMoney(usdValue,khrValue){
   if(num(khrValue)!==0) parts.push(khr(khrValue));
   return parts.join(' / ');
 }
-function productLabel(it,c){
+function productParts(it,c){
   const name=String(it.productName||it.description||it.productCode||it.sku||'Product').trim()||'Product';
   const price=num(it.unitPrice!=null?it.unitPrice:(it.price!=null?it.price:it.sellingPrice));
-  return name+' × '+moneyForCurrency(price,c);
+  const qty=num(it.qty!=null?it.qty:it.quantity);
+  const unit=String(it.unit||'').trim();
+  return {name:name,price:price,qty:qty,unit:unit,currency:String(c||'USD').toUpperCase()};
+}
+function productLabel(p){
+  const qtyText=num(p.qty).toLocaleString(undefined,{maximumFractionDigits:4});
+  return p.name+' × '+qtyText+' × '+moneyForCurrency(p.price,p.currency);
 }
 function buildCustomerRows(invoices){
   const map=new Map();
   invoices.forEach(function(inv){
     const customer=String(inv.customer||'-').trim()||'-';
     const rawKey=String(inv.customerId||inv.customerCode||customer).trim().toLowerCase();
-    if(!map.has(rawKey)){
-      map.set(rawKey,{customer:customer,invoices:[],products:[],productKeys:new Set(),payments:new Set(),statuses:new Set(),totalUSD:0,totalKHR:0,outUSD:0,outKHR:0});
-    }
+    if(!map.has(rawKey))map.set(rawKey,{customer:customer,invoices:[],productMap:new Map(),products:[],payments:new Set(),statuses:new Set(),totalUSD:0,totalKHR:0,outUSD:0,outKHR:0});
     const row=map.get(rawKey);
     const c=String(inv.currency||'USD').toUpperCase();
     row.invoices.push(inv);
-    if(c==='KHR'){row.totalKHR+=num(inv.grandTotal);row.outKHR+=num(inv.outstanding)}
-    else{row.totalUSD+=num(inv.grandTotal);row.outUSD+=num(inv.outstanding)}
-    const payment=String(inv.paymentMethod||'-').trim()||'-';
-    row.payments.add(payment);
-    const status=String(inv.status||inv.invoiceType||'-').trim()||'-';
-    row.statuses.add(status);
+    if(c==='KHR'){row.totalKHR+=num(inv.grandTotal);row.outKHR+=num(inv.outstanding)}else{row.totalUSD+=num(inv.grandTotal);row.outUSD+=num(inv.outstanding)}
+    row.payments.add(String(inv.paymentMethod||'-').trim()||'-');
+    row.statuses.add(String(inv.status||inv.invoiceType||'-').trim()||'-');
     const items=Array.isArray(inv.items)?inv.items:[];
     items.forEach(function(it){
-      const label=productLabel(it,c);
-      const key=c+'|||'+label.toLowerCase();
-      if(!row.productKeys.has(key)){row.productKeys.add(key);row.products.push(label)}
+      const p=productParts(it,c);
+      const key=[p.currency,p.name.toLowerCase(),String(p.price),p.unit.toLowerCase()].join('|||');
+      if(!row.productMap.has(key))row.productMap.set(key,{name:p.name,price:p.price,qty:0,unit:p.unit,currency:p.currency});
+      row.productMap.get(key).qty+=p.qty;
     });
   });
-  return Array.from(map.values()).sort(function(a,b){return a.customer.localeCompare(b.customer)});
+  const rows=Array.from(map.values()).map(function(row){
+    row.invoices.sort(function(a,b){return invoiceCompare(a.invoiceNo,b.invoiceNo)});
+    row.products=Array.from(row.productMap.values()).map(productLabel);
+    return row;
+  });
+  return rows.sort(function(a,b){return a.customer.localeCompare(b.customer)});
 }
 function invoiceActionHtml(row){
   if(row.invoices.length===1){
@@ -177,11 +194,12 @@ async function openPreview(key){
   if(!currentGroup)return;
   const g=currentGroup;
   $('previewSubtitle').textContent=g.saleDate+' • '+g.salesman+' • '+g.locationCode;
-  $('previewMeta').innerHTML='<div class="meta-box"><small>Sale Date</small><strong>'+esc(g.saleDate)+'</strong></div><div class="meta-box"><small>Salesman</small><strong>'+esc(g.salesman)+'</strong></div><div class="meta-box"><small>Location Code</small><strong>'+esc(g.locationCode)+'</strong></div><div class="meta-box"><small>Invoices</small><strong>'+g.invoiceCount+'</strong></div>';
+  $('previewMeta').innerHTML='<div class="meta-box"><small>Sale Date</small><strong>'+esc(g.saleDate)+'</strong></div><div class="meta-box"><small>Salesman</small><strong>'+esc(g.salesman)+'</strong></div><div class="meta-box"><small>Location Code</small><strong>'+esc(g.locationCode)+'</strong></div><div class="meta-box"><small>Invoice Range</small><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div>';
   $('previewBody').innerHTML='<tr><td colspan="7" class="empty">Loading customer products…</td></tr>';
   renderPreviewTotals(g);
   currentCustomerRows=[];
   $('downloadSummaryBtn').disabled=true;
+  $('downloadPictureBtn').disabled=true;
   $('previewOverlay').classList.remove('hidden');
   try{
     const invoiceIds=g.invoices.map(function(inv){return String(inv.invoiceId||'').trim()}).filter(Boolean);
@@ -191,6 +209,7 @@ async function openPreview(key){
     currentCustomerRows=buildCustomerRows(details.length?details:g.invoices);
     renderCustomerRows();
     $('downloadSummaryBtn').disabled=false;
+    $('downloadPictureBtn').disabled=false;
   }catch(error){
     console.error(error);
     if(!currentGroup||currentGroup.key!==key)return;
@@ -201,49 +220,44 @@ function reportTotalsHtml(g){
   const converted=g.dailySaleUSD==null?null:(g.totalKHR?g.totalKHR/g.avgRate:0);
   return '<div class="total-row"><span>Total Sale in USD</span><strong>'+usd(g.totalUSD)+'</strong></div><div class="total-row"><span>Total Sale in KHR</span><strong>'+khr(g.totalKHR)+'</strong></div><div class="total-row"><span>KHR Converted to USD</span><strong>'+(converted==null?'—':usd(converted))+'</strong></div><div class="total-row key"><span>Daily Sale in USD</span><strong>'+(g.dailySaleUSD==null?'—':usd(g.dailySaleUSD))+'</strong></div><div class="total-row recv"><span>Total Receivable USD</span><strong>'+usd(g.recvUSD)+'</strong></div><div class="total-row recv"><span>Total Receivable KHR</span><strong>'+khr(g.recvKHR)+'</strong></div>';
 }
+function buildDailySaleReport(){
+  if(!currentGroup||!currentCustomerRows.length)return null;
+  const g=currentGroup;
+  const rows=currentCustomerRows.map(function(row){
+    const products=row.products.length?row.products.map(esc).join(', '):'-';
+    return '<tr><td><strong>'+esc(row.customer)+'</strong></td><td>'+products+'</td><td>'+esc(Array.from(row.payments).join(', '))+'</td><td class="money">'+combinedMoney(row.totalUSD,row.totalKHR)+'</td><td class="money">'+combinedMoney(row.outUSD,row.outKHR)+'</td><td>'+esc(Array.from(row.statuses).join(', '))+'</td></tr>';
+  }).join('');
+  const report=document.createElement('div');
+  report.className='download-report';
+  report.innerHTML='<h1>BIG BROTHER</h1><div class="report-sub">Daily Sale Summary</div><div class="report-meta"><div><small>Sale Date</small><br><strong>'+esc(g.saleDate)+'</strong></div><div><small>Salesman</small><br><strong>'+esc(g.salesman)+'</strong></div><div><small>Location</small><br><strong>'+esc(g.locationCode)+'</strong></div><div><small>Invoice Range</small><br><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div></div><table><thead><tr><th>Customer</th><th>Sold Products</th><th>Payment</th><th>Grand Total</th><th>Outstanding</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table><div class="report-totals totals">'+reportTotalsHtml(g)+'</div>';
+  document.body.appendChild(report);
+  return report;
+}
+function safeFilePart(v){return String(v||'').replace(/[^a-z0-9_-]+/gi,'_').replace(/^_+|_+$/g,'')}
+async function renderReportCanvas(report){
+  if(typeof window.html2canvas!=='function')throw new Error('Picture library is not ready. Please try again.');
+  if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+  return window.html2canvas(report,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});
+}
 async function downloadDailySaleSummary(){
   if(!currentGroup||!currentCustomerRows.length)return;
-  const btn=$('downloadSummaryBtn');
-  const old=btn.textContent;
-  btn.disabled=true;
-  btn.textContent='Preparing PDF…';
-  let report=null;
+  const btn=$('downloadSummaryBtn'),old=btn.textContent;btn.disabled=true;btn.textContent='Preparing PDF…';let report=null;
   try{
-    if(typeof window.html2canvas!=='function'||!window.jspdf||!window.jspdf.jsPDF)throw new Error('PDF library is not ready. Please try again.');
-    const g=currentGroup;
-    const rows=currentCustomerRows.map(function(row){
-      const products=row.products.length?row.products.map(esc).join(', '):'-';
-      return '<tr><td><strong>'+esc(row.customer)+'</strong></td><td>'+products+'</td><td>'+esc(Array.from(row.payments).join(', '))+'</td><td class="money">'+combinedMoney(row.totalUSD,row.totalKHR)+'</td><td class="money">'+combinedMoney(row.outUSD,row.outKHR)+'</td><td>'+esc(Array.from(row.statuses).join(', '))+'</td></tr>';
-    }).join('');
-    report=document.createElement('div');
-    report.className='download-report';
-    report.innerHTML='<h1>BIG BROTHER</h1><div class="report-sub">Daily Sale Summary</div><div class="report-meta"><div><small>Sale Date</small><br><strong>'+esc(g.saleDate)+'</strong></div><div><small>Salesman</small><br><strong>'+esc(g.salesman)+'</strong></div><div><small>Location</small><br><strong>'+esc(g.locationCode)+'</strong></div><div><small>Invoices</small><br><strong>'+g.invoiceCount+'</strong></div></div><table><thead><tr><th>Customer</th><th>Sold Products</th><th>Payment</th><th>Grand Total</th><th>Outstanding</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table><div class="report-totals totals">'+reportTotalsHtml(g)+'</div>';
-    document.body.appendChild(report);
-    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
-    const canvas=await window.html2canvas(report,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});
-    const jsPDF=window.jspdf.jsPDF;
-    const pdf=new jsPDF('p','mm','a4');
-    const margin=8,pageW=210,pageH=297,contentH=pageH-(margin*2),imgW=pageW-(margin*2);
-    const imgH=canvas.height*imgW/canvas.width;
-    const data=canvas.toDataURL('image/jpeg',0.96);
-    let shown=0;
-    pdf.addImage(data,'JPEG',margin,margin,imgW,imgH,undefined,'FAST');
-    shown+=contentH;
-    while(shown<imgH){
-      pdf.addPage();
-      pdf.addImage(data,'JPEG',margin,margin-shown,imgW,imgH,undefined,'FAST');
-      shown+=contentH;
-    }
-    const safe=function(v){return String(v||'').replace(/[^a-z0-9_-]+/gi,'_').replace(/^_+|_+$/g,'')};
-    pdf.save('BIG_BROTHER_Daily_Sale_'+safe(g.saleDate)+'_'+safe(g.salesman)+'_'+safe(g.locationCode)+'.pdf');
-  }catch(error){
-    console.error(error);
-    alert(error.message||'Could not download Daily Sale Summary.');
-  }finally{
-    if(report&&report.parentNode)report.parentNode.removeChild(report);
-    btn.disabled=false;
-    btn.textContent=old;
-  }
+    if(!window.jspdf||!window.jspdf.jsPDF)throw new Error('PDF library is not ready. Please try again.');
+    const g=currentGroup;report=buildDailySaleReport();const canvas=await renderReportCanvas(report);const jsPDF=window.jspdf.jsPDF;const pdf=new jsPDF('p','mm','a4');
+    const margin=8,pageW=210,pageH=297,contentH=pageH-(margin*2),imgW=pageW-(margin*2),imgH=canvas.height*imgW/canvas.width,data=canvas.toDataURL('image/jpeg',0.96);let shown=0;
+    pdf.addImage(data,'JPEG',margin,margin,imgW,imgH,undefined,'FAST');shown+=contentH;
+    while(shown<imgH){pdf.addPage();pdf.addImage(data,'JPEG',margin,margin-shown,imgW,imgH,undefined,'FAST');shown+=contentH}
+    pdf.save('BIG_BROTHER_Daily_Sale_'+safeFilePart(g.saleDate)+'_'+safeFilePart(g.salesman)+'_'+safeFilePart(g.locationCode)+'.pdf');
+  }catch(error){console.error(error);alert(error.message||'Could not download Daily Sale Summary.')}finally{if(report&&report.parentNode)report.parentNode.removeChild(report);btn.disabled=false;btn.textContent=old}
+}
+async function downloadDailySalePicture(){
+  if(!currentGroup||!currentCustomerRows.length)return;
+  const btn=$('downloadPictureBtn'),old=btn.textContent;btn.disabled=true;btn.textContent='Preparing Picture…';let report=null;
+  try{
+    const g=currentGroup;report=buildDailySaleReport();const canvas=await renderReportCanvas(report);const link=document.createElement('a');
+    link.href=canvas.toDataURL('image/png');link.download='BIG_BROTHER_Daily_Sale_'+safeFilePart(g.saleDate)+'_'+safeFilePart(g.salesman)+'_'+safeFilePart(g.locationCode)+'.png';document.body.appendChild(link);link.click();link.remove();
+  }catch(error){console.error(error);alert(error.message||'Could not download Daily Sale picture.')}finally{if(report&&report.parentNode)report.parentNode.removeChild(report);btn.disabled=false;btn.textContent=old}
 }
 function closePreview(){$('previewOverlay').classList.add('hidden');currentGroup=null}
 async function openInvoicePreview(invoiceNo){$('invoiceOverlay').classList.remove('hidden');$('invoicePreviewSubtitle').textContent=invoiceNo;$('invoiceSheet').innerHTML='<div class="empty">Loading invoice...</div>';try{const d=await api({action:'invoiceDetail',invoiceNo});const inv=d.invoice||d;if(!inv||!inv.invoiceNo)throw new Error('Invoice detail was not returned.');renderInvoice(inv)}catch(e){$('invoiceSheet').innerHTML=`<div class="empty">${esc(e.message||'Could not load invoice.')}</div>`}}
