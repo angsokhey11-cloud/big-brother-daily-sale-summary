@@ -135,7 +135,7 @@ function productParts(it,c){
 }
 function productLabel(p){
   const qtyText=num(p.qty).toLocaleString(undefined,{maximumFractionDigits:4});
-  return p.name+' × '+qtyText+' × '+moneyForCurrency(p.price,p.currency);
+  return p.name+' ('+qtyText+') × '+moneyForCurrency(p.price,p.currency);
 }
 function buildCustomerRows(invoices){
   const map=new Map();
