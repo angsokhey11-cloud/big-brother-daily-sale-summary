@@ -241,7 +241,7 @@ function buildDailySaleReport(){
 function buildDailySalePdfPages(){
   if(!currentGroup||!currentCustomerRows.length)return [];
   const g=currentGroup;
-  const rowsPerPage=12;
+  const rowsPerPage=15;
   const pageCount=Math.ceil(currentCustomerRows.length/rowsPerPage);
   const pages=[];
   for(let pageIndex=0;pageIndex<pageCount;pageIndex++){
