@@ -100,6 +100,26 @@
         p_invoice_ids:Array.isArray(params.invoiceIds)?params.invoiceIds.map(String):[]
       });
     }
+    if(action==='shareDailySaleTelegram'){
+      await ensureSession();
+      const response=await fetch(URL+'/functions/v1/bb-daily-sale-telegram',{
+        method:'POST',
+        headers:{
+          apikey:KEY,
+          Authorization:'Bearer '+session.access_token,
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+          location_code:String(params.locationCode||''),
+          sale_date:String(params.saleDate||''),
+          salesman:String(params.salesman||''),
+          invoice_range:String(params.invoiceRange||''),
+          invoice_count:Number(params.invoiceCount||0),
+          images:Array.isArray(params.images)?params.images:[]
+        })
+      });
+      return parse(response);
+    }
     throw new Error('Unsupported Daily Sale Summary action: '+action);
   }
 
