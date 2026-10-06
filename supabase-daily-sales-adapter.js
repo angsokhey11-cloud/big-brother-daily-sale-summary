@@ -95,6 +95,11 @@
         p_invoice_no:String(params.invoiceNo||'')
       });
     }
+    if(action==='dailySaleItems'){
+      return rpc('bb_daily_sale_items',{
+        p_invoice_ids:Array.isArray(params.invoiceIds)?params.invoiceIds.map(String):[]
+      });
+    }
     throw new Error('Unsupported Daily Sale Summary action: '+action);
   }
 
