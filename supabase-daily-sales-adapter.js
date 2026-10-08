@@ -82,13 +82,21 @@
   async function api(params={}){
     const action=String(params.action||'');
     if(action==='invoiceList'){
-      return rpc('bb_sales_history_list',{
+      const result=await rpc('bb_sales_history_list',{
         p_invoice_no:String(params.invoiceNo||''),
         p_customer:String(params.customer||''),
         p_date_from:params.dateFrom||null,
         p_date_to:params.dateTo||null,
         p_invoice_type:String(params.invoiceType||'')
       });
+      // A/R opening balance migration is collectible debt, never a Daily Sale.
+      // Preserve it in Invoice History and Receivables; filter this report only.
+      if(Array.isArray(result.invoices)){
+        result.invoices=result.invoices.filter(inv=>
+          !String(inv.invoiceId||'').startsWith('AR-MIG-')
+        );
+      }
+      return result;
     }
     if(action==='invoiceDetail'){
       return rpc('bb_sales_history_detail',{
