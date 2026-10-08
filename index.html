@@ -14,7 +14,7 @@
     if(!response.ok)throw new Error('Could not load Daily Sale Summary source.');
     let html=await response.text();
 
-    const adapter='<scr'+'ipt src="supabase-daily-sales-adapter.js?v=20261006-10"></scr'+'ipt>';
+    const adapter='<scr'+'ipt src="supabase-daily-sales-adapter.js?v=20261008-ar-exclusion1"></scr'+'ipt>';
     const headClose=html.toLowerCase().indexOf('</head>');
     if(headClose<0)throw new Error('Daily Sale Summary source is missing </head>.');
     html=html.slice(0,headClose)+adapter+'\n'+html.slice(headClose);
