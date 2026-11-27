@@ -154,6 +154,8 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
  #previewOverlay .meta-box:last-child{grid-column:1/-1}
 }
 
+
+.bb-customer-invoice-nos{color:#245da8!important;font-weight:600;line-height:1.35;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -180,7 +182,7 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
     </div></details>
     <div class="tablewrap">
       <table class="bb-summary-table">
-        <thead><tr><th>Sale Date</th><th>Salesman</th><th>Location Code</th><th class="center">Invoice Range</th><th class="money">Total Sale USD</th><th class="money">Total Sale KHR</th><th class="money">Avg. KHR Rate</th><th class="money">Daily Sale in USD</th><th class="money">Receivable USD</th><th class="money">Receivable KHR</th><th>Action</th></tr></thead>
+        <thead><tr><th>Sale Date</th><th>Salesman</th><th>Location</th><th class="center">Invoice Range</th><th class="money">Total Sale USD</th><th class="money">Total Sale KHR</th><th class="money">Avg. KHR Rate</th><th class="money">Daily Sale in USD</th><th class="money">Receivable USD</th><th class="money">Receivable KHR</th><th>Action</th></tr></thead>
         <tbody id="summaryBody"><tr><td colspan="11" class="empty">Loading Daily Sale Summary...</td></tr></tbody>
       </table>
     </div>
@@ -249,6 +251,11 @@ function khr(v){return '៛'+num(v).toLocaleString(undefined,{minimumFractionDig
 function rate(v){return num(v).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:2})}
 function showError(msg){$('errorBox').textContent=msg||'';$('errorBox').classList.toggle('show',!!msg)}
 async function api(params){const res=await fetch(SALES_API+'?'+new URLSearchParams(params).toString(),{cache:'no-store'});if(!res.ok)throw new Error('Sales Database returned HTTP '+res.status);const d=await res.json();if(!d||d.success===false)throw new Error(d?.error||'Sales Database returned an error.');return d}
+let saleLocationNames=new Map();
+function setSaleLocationNames(locations){
+  saleLocationNames=new Map((Array.isArray(locations)?locations:[]).map(x=>[String(x.locationCode||x.location_code||'').trim().toLowerCase(),String(x.locationName||x.location_name||'').trim()]).filter(x=>x[0]&&x[1]));
+}
+function saleLocationName(code){return saleLocationNames.get(String(code||'').trim().toLowerCase())||String(code||'-');}
 function groupKey(inv){return [dateOnly(inv.invoiceDate),String(inv.salesperson||'').trim(),String(inv.locationCode||'').trim()].join('|||')}
 function invoiceCompare(a,b){return String(a||'').localeCompare(String(b||''),undefined,{numeric:true,sensitivity:'base'})}
 function getInvoiceRange(invoices){
@@ -270,7 +277,7 @@ function calculateGroup(list){
   return {key:groupKey(first),saleDate:dateOnly(first.invoiceDate),salesman:String(first.salesperson||'').trim()||'-',locationCode:String(first.locationCode||'').trim()||'-',invoiceCount:list.length,invoiceRange:getInvoiceRange(sortedInvoices),totalUSD,totalKHR,recvUSD,recvKHR,avgRate,rateComplete,dailySaleUSD,invoices:sortedInvoices};
 }
 function buildGroups(){const map=new Map();allInvoices.forEach(inv=>{const key=groupKey(inv);if(!map.has(key))map.set(key,[]);map.get(key).push(inv)});groups=[...map.values()].map(calculateGroup).sort((a,b)=>b.saleDate.localeCompare(a.saleDate)||a.salesman.localeCompare(b.salesman)||a.locationCode.localeCompare(b.locationCode));populateFilters();applyFilters()}
-function populateFilters(){const sales=[...new Set(groups.map(g=>g.salesman).filter(v=>v&&v!=='-'))].sort();const locs=[...new Set(groups.map(g=>g.locationCode).filter(v=>v&&v!=='-'))].sort();const s=$('salesmanFilter'),l=$('locationFilter'),sv=s.value,lv=l.value;s.innerHTML='<option value="">All Salesmen</option>'+sales.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');l.innerHTML='<option value="">All Locations</option>'+locs.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');if(sales.includes(sv))s.value=sv;if(locs.includes(lv))l.value=lv}
+function populateFilters(){const sales=[...new Set(groups.map(g=>g.salesman).filter(v=>v&&v!=='-'))].sort();const locs=[...new Set(groups.map(g=>g.locationCode).filter(v=>v&&v!=='-'))].sort();const s=$('salesmanFilter'),l=$('locationFilter'),sv=s.value,lv=l.value;s.innerHTML='<option value="">All Salesmen</option>'+sales.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');l.innerHTML='<option value="">All Locations</option>'+locs.map(v=>`<option value="${esc(v)}">${esc(saleLocationName(v))}</option>`).join('');if(sales.includes(sv))s.value=sv;if(locs.includes(lv))l.value=lv}
 function applyFilters(){const f=$('dateFrom').value,t=$('dateTo').value,s=$('salesmanFilter').value,l=$('locationFilter').value;filteredGroups=groups.filter(g=>(!f||g.saleDate>=f)&&(!t||g.saleDate<=t)&&(!s||g.salesman===s)&&(!l||g.locationCode===l));renderGroups()}
 function renderGroups(){
   updateSaleFilterHint();
@@ -278,11 +285,11 @@ function renderGroups(){
   const totalUsd=filteredGroups.reduce((x,g)=>x+g.totalUSD,0),totalKhr=filteredGroups.reduce((x,g)=>x+g.totalKHR,0);const allComplete=filteredGroups.every(g=>g.rateComplete);const dailyUsd=filteredGroups.reduce((x,g)=>x+(g.dailySaleUSD==null?0:g.dailySaleUSD),0);
   $('cardUsd').textContent=usd(totalUsd);$('cardKhr').textContent=khr(totalKhr);$('cardDailyUsd').textContent=allComplete?usd(dailyUsd):'Rate Missing';
   if(!filteredGroups.length){$('summaryBody').innerHTML='<tr><td colspan="11" class="empty">No Daily Sale groups found.</td></tr>';return}
-  $('summaryBody').innerHTML=filteredGroups.map(g=>`<tr><td><strong>${esc(g.saleDate)}</strong></td><td>${esc(g.salesman)}</td><td><strong>${esc(g.locationCode)}</strong></td><td class="center"><strong>${esc(g.invoiceRange)}</strong><br><small>${g.invoiceCount} invoices</small></td><td class="money">${usd(g.totalUSD)}</td><td class="money">${khr(g.totalKHR)}</td><td class="money ${g.rateComplete?'':'warn'}">${g.totalKHR? (g.rateComplete?rate(g.avgRate):'Missing Rate'):'-'}</td><td class="money daily-key">${g.dailySaleUSD==null?'—':usd(g.dailySaleUSD)}</td><td class="money">${usd(g.recvUSD)}</td><td class="money">${khr(g.recvKHR)}</td><td><button class="btn primary" onclick="openPreview(${esc(JSON.stringify(g.key))})">Preview</button><button class="btn secondary bb-row-functions" onclick="openSaleFunctions(${esc(JSON.stringify(g.key))})">Functions ▾</button></td></tr>`).join('');
+  $('summaryBody').innerHTML=filteredGroups.map(g=>`<tr><td><strong>${esc(g.saleDate)}</strong></td><td>${esc(g.salesman)}</td><td><strong>${esc(saleLocationName(g.locationCode))}</strong></td><td class="center"><strong>${esc(g.invoiceRange)}</strong><br><small>${g.invoiceCount} invoices</small></td><td class="money">${usd(g.totalUSD)}</td><td class="money">${khr(g.totalKHR)}</td><td class="money ${g.rateComplete?'':'warn'}">${g.totalKHR? (g.rateComplete?rate(g.avgRate):'Missing Rate'):'-'}</td><td class="money daily-key">${g.dailySaleUSD==null?'—':usd(g.dailySaleUSD)}</td><td class="money">${usd(g.recvUSD)}</td><td class="money">${khr(g.recvKHR)}</td><td><button class="btn primary" onclick="openPreview(${esc(JSON.stringify(g.key))})">Preview</button><button class="btn secondary bb-row-functions" onclick="openSaleFunctions(${esc(JSON.stringify(g.key))})">Functions ▾</button></td></tr>`).join('');
   labelSaleCells('summaryBody',['Sale date','Salesman','Location','Invoice range','Sale USD','Sale KHR','Avg. KHR rate','USD equivalent','Receivable USD','Receivable KHR','Action']);
 }
 function clearFilters(){$('dateFrom').value='';$('dateTo').value='';$('salesmanFilter').value='';$('locationFilter').value='';applyFilters()}
-async function loadInvoices(manual=false){const btn=$('refreshBtn');if(manual){btn.disabled=true;btn.textContent='Refreshing…'}showError('');$('syncStatus').textContent='Loading Invoice History…';try{const d=await api({action:'invoiceList'});allInvoices=Array.isArray(d.invoices)?d.invoices:[];buildGroups();$('syncStatus').textContent=`Updated • ${allInvoices.length} invoices`}catch(e){showError(e.message||'Could not load invoice history.');$('summaryBody').innerHTML='<tr><td colspan="11" class="empty">Could not load Daily Sale Summary.</td></tr>'; $('syncStatus').textContent='Load failed'}finally{if(manual){btn.disabled=false;btn.textContent='↻ Refresh'}}}
+async function loadInvoices(manual=false){const btn=$('refreshBtn');if(manual){btn.disabled=true;btn.textContent='Refreshing…'}showError('');$('syncStatus').textContent='Loading Invoice History…';try{const d=await api({action:'invoiceList'});allInvoices=Array.isArray(d.invoices)?d.invoices:[];setSaleLocationNames(d.locations);buildGroups();$('syncStatus').textContent=`Updated • ${allInvoices.length} invoices`}catch(e){showError(e.message||'Could not load invoice history.');$('summaryBody').innerHTML='<tr><td colspan="11" class="empty">Could not load Daily Sale Summary.</td></tr>'; $('syncStatus').textContent='Load failed'}finally{if(manual){btn.disabled=false;btn.textContent='↻ Refresh'}}}
 function moneyForCurrency(v,c){return String(c||'USD').toUpperCase()==='KHR'?khr(v):usd(v)}
 function combinedMoney(usdValue,khrValue){
   const parts=[];
@@ -357,9 +364,9 @@ function renderCompactSaleCustomers(g){
   const host=$('bbCompactCustomers');if(!host)return;
   const rows=compactSaleCustomers(g.invoices);
   host.innerHTML='<div class="bb-customer-list-head"><span>Customer · '+rows.length+'</span><span>Grand total</span><span>Invoice</span></div>'+rows.map(row=>{
-    const count=row.invoices.length;
+    const invoiceNos=row.invoices.map(inv=>String(inv.invoiceNo||'').trim()).filter(Boolean);
     const status=Array.from(row.statuses).join(' / ');
-    return '<div class="bb-customer-list-row"><div class="bb-customer-name"><strong>'+esc(row.customer)+'</strong><small>'+esc(status)+(row.outUSD||row.outKHR?' · Due '+combinedMoney(row.outUSD,row.outKHR):'')+'</small></div><strong class="bb-customer-amount">'+combinedMoney(row.totalUSD,row.totalKHR)+'</strong><div class="bb-customer-action">'+invoiceActionHtml(row)+'</div></div>';
+    return '<div class="bb-customer-list-row"><div class="bb-customer-name"><strong>'+esc(row.customer)+'</strong><small class="bb-customer-invoice-nos">'+esc(invoiceNos.join(', ')||'—')+'</small><small>'+esc(status)+(row.outUSD||row.outKHR?' · Due '+combinedMoney(row.outUSD,row.outKHR):'')+'</small></div><strong class="bb-customer-amount">'+combinedMoney(row.totalUSD,row.totalKHR)+'</strong><div class="bb-customer-action">'+invoiceActionHtml(row)+'</div></div>';
   }).join('');
 }
 function renderCustomerRows(){
@@ -383,8 +390,8 @@ async function openPreview(key){
   currentGroup=groups.find(function(g){return g.key===key});
   if(!currentGroup)return;
   const g=currentGroup;
-  $('previewSubtitle').textContent=g.saleDate+' • '+g.salesman+' • '+g.locationCode;
-  $('previewMeta').innerHTML='<div class="meta-box"><small>Sale Date</small><strong>'+esc(g.saleDate)+'</strong></div><div class="meta-box"><small>Salesman</small><strong>'+esc(g.salesman)+'</strong></div><div class="meta-box"><small>Location Code</small><strong>'+esc(g.locationCode)+'</strong></div><div class="meta-box"><small>Invoice Range</small><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div>';
+  $('previewSubtitle').textContent=g.saleDate+' • '+g.salesman+' • '+saleLocationName(g.locationCode);
+  $('previewMeta').innerHTML='<div class="meta-box"><small>Sale Date</small><strong>'+esc(g.saleDate)+'</strong></div><div class="meta-box"><small>Salesman</small><strong>'+esc(g.salesman)+'</strong></div><div class="meta-box"><small>Location</small><strong>'+esc(saleLocationName(g.locationCode))+'</strong></div><div class="meta-box"><small>Invoice Range</small><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div>';
   $('previewBody').innerHTML='<tr><td colspan="7" class="empty">Loading invoice products…</td></tr>';
   renderPreviewTotals(g);
   renderCompactSaleCustomers(g);
@@ -426,7 +433,7 @@ function updateSaleFilterHint(){
   const parts=[$('dateFrom').value||'', $('dateTo').value||''];
   const text=(parts[0]||parts[1]?[parts[0]||'Any date',parts[1]||'Any date'].join(' – '):'All dates')+
     ($('salesmanFilter').value?' · '+$('salesmanFilter').value:'')+
-    ($('locationFilter').value?' · '+$('locationFilter').value:'');
+    ($('locationFilter').value?' · '+saleLocationName($('locationFilter').value):'');
   $('bbSaleFilterHint').textContent=text+(d.open?' · Hide ▴':' · Show ▾');
 }
 function setSaleFunctionsOpen(open){
@@ -455,7 +462,7 @@ function buildDigitalSalePages(g,rows){
     const page=document.createElement('div');page.className='bb-digital-report';
     page.innerHTML='<h1>BIG BROTHER</h1><div class="bb-report-subtitle">Daily Sale Summary</div>'+
       '<div class="bb-report-meta"><div><small>Sale Date</small><strong>'+esc(g.saleDate)+'</strong></div>'+
-      '<div><small>Location</small><strong>'+esc(g.locationCode)+'</strong></div>'+
+      '<div><small>Location</small><strong>'+esc(saleLocationName(g.locationCode))+'</strong></div>'+
       '<div class="bb-report-range"><small>Salesman</small><strong>'+esc(g.salesman)+'</strong></div>'+
       '<div class="bb-report-range"><small>Invoice Range · '+g.invoiceCount+' invoices</small><strong>'+esc(g.invoiceRange)+'</strong></div></div>'+
       '<div class="bb-report-rows"></div><div class="bb-report-page-number">Part 00 / 00</div>';
@@ -506,7 +513,7 @@ function buildDailySaleReport(){
   }).join('');
   const report=document.createElement('div');
   report.className='download-report';
-  report.innerHTML='<h1>BIG BROTHER</h1><div class="report-sub">Daily Sale Summary</div><div class="report-meta"><div><small>Sale Date</small><br><strong>'+esc(g.saleDate)+'</strong></div><div><small>Salesman</small><br><strong>'+esc(g.salesman)+'</strong></div><div><small>Location</small><br><strong>'+esc(g.locationCode)+'</strong></div><div><small>Invoice Range</small><br><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div></div><table><colgroup><col style="width:6%"><col style="width:18%"><col style="width:49%"><col style="width:17%"><col style="width:10%"></colgroup><thead><tr><th class="center">No.</th><th>Customer</th><th>Sold Products</th><th>Grand Total</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table><div class="report-totals totals">'+reportTotalsHtml(g)+'</div>';
+  report.innerHTML='<h1>BIG BROTHER</h1><div class="report-sub">Daily Sale Summary</div><div class="report-meta"><div><small>Sale Date</small><br><strong>'+esc(g.saleDate)+'</strong></div><div><small>Salesman</small><br><strong>'+esc(g.salesman)+'</strong></div><div><small>Location</small><br><strong>'+esc(saleLocationName(g.locationCode))+'</strong></div><div><small>Invoice Range</small><br><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div></div><table><colgroup><col style="width:6%"><col style="width:18%"><col style="width:49%"><col style="width:17%"><col style="width:10%"></colgroup><thead><tr><th class="center">No.</th><th>Customer</th><th>Sold Products</th><th>Grand Total</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table><div class="report-totals totals">'+reportTotalsHtml(g)+'</div>';
   document.body.appendChild(report);
   return report;
 }
@@ -533,7 +540,7 @@ function buildDailySalePdfPages(){
         '<div class="report-meta">'+
           '<div><small>Sale Date</small><br><strong>'+esc(g.saleDate)+'</strong></div>'+
           '<div><small>Salesman</small><br><strong>'+esc(g.salesman)+'</strong></div>'+
-          '<div><small>Location</small><br><strong>'+esc(g.locationCode)+'</strong></div>'+
+          '<div><small>Location</small><br><strong>'+esc(saleLocationName(g.locationCode))+'</strong></div>'+
           '<div><small>Invoice Range</small><br><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div>'+
         '</div>'
       : '<div class="report-page-info continuation-page"><span></span><span>Page '+(pageIndex+1)+' / '+pageCount+'</span></div>';

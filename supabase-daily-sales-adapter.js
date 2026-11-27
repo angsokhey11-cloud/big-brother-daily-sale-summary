@@ -96,6 +96,11 @@
           !String(inv.invoiceId||'').startsWith('AR-MIG-')
         );
       }
+      // Use the existing permission-scoped location directory; a name lookup failure must not block sales.
+      try{
+        const profile=await rpc('bb_current_access_profile');
+        result.locations=Array.isArray(profile?.locations)?profile.locations:[];
+      }catch(error){console.warn('Location names unavailable:',error.message);result.locations=[];}
       return result;
     }
     if(action==='invoiceDetail'){
