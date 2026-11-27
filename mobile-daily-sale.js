@@ -24,6 +24,27 @@ function polishSummaryRows(doc){const body=doc.getElementById('summaryBody');if(
 function fitInvoice(doc){const overlay=doc.getElementById('invoiceOverlay');if(!overlay||overlay.classList.contains('hidden'))return;const sheet=doc.getElementById('invoiceSheet');if(!sheet)return;const modal=overlay.querySelector('.modal');const actions=overlay.querySelector('.modal-actions');if(!modal)return;let scroll=modal.querySelector('.bb-daily-invoice-scroll');let stage=modal.querySelector('.bb-daily-invoice-stage');if(!scroll){scroll=doc.createElement('div');scroll.className='bb-daily-invoice-scroll';if(actions?.nextSibling)modal.insertBefore(scroll,actions.nextSibling);else modal.appendChild(scroll)}if(!stage){stage=doc.createElement('div');stage.className='bb-daily-invoice-stage';scroll.appendChild(stage)}if(sheet.parentNode!==stage)stage.appendChild(sheet);const BASE=794;const available=Math.max(260,scroll.clientWidth-2);const scale=Math.min(1,available/BASE);stage.style.setProperty('--bb-invoice-scale',String(scale));const h=Math.max(sheet.scrollHeight,sheet.offsetHeight,1);stage.style.width=Math.ceil(BASE*scale)+'px';stage.style.height=Math.ceil(h*scale)+'px'}
 
 function inject(){let doc,win;try{doc=frame.contentDocument||frame.contentWindow.document;win=frame.contentWindow}catch(_){return false}if(!doc?.head||!doc?.body)return false;const panel=doc.querySelector('.panel');const filters=doc.querySelector('.filters');if(!panel||!filters)return false;
+  if(doc.getElementById('bbSaleFilters')){
+    // V2 owns its filters, responsive rows, Functions and digital summary.
+    // Never install the obsolete V1 bottom sheet or table-cell overrides.
+    doc.getElementById('bb-daily-mobile-css')?.remove();
+    doc.getElementById('bbDailyFilterBackdrop')?.remove();
+    doc.getElementById('bbDailyMobileBar')?.remove();
+    if(!doc.getElementById('bb-daily-invoice-fit-v2')){
+      const style=doc.createElement('style');style.id='bb-daily-invoice-fit-v2';
+      style.textContent="#invoiceOverlay>.modal{overflow:hidden!important;display:flex!important;flex-direction:column!important}#invoiceOverlay .modal-actions{flex:0 0 auto!important}.bb-daily-invoice-scroll{flex:1 1 auto;min-height:0;overflow:auto;padding:4px 0 70px}.bb-daily-invoice-stage{position:relative;min-height:1px;margin:0 auto;--bb-invoice-scale:1}.bb-daily-invoice-stage #invoiceSheet{position:absolute!important;left:0;top:0;width:794px!important;min-width:794px!important;max-width:794px!important;margin:0!important;transform:scale(var(--bb-invoice-scale));transform-origin:top left;box-shadow:none!important;box-sizing:border-box!important}\n";doc.head.appendChild(style);
+    }
+    const overlay=doc.getElementById('invoiceOverlay');
+    if(overlay&&!overlay.dataset.bbV2InvoiceWatch){
+      overlay.dataset.bbV2InvoiceWatch='1';
+      const run=()=>{if(!overlay.classList.contains('hidden'))win.requestAnimationFrame(()=>fitInvoice(doc));};
+      new win.MutationObserver(run).observe(overlay,{attributes:true,attributeFilter:['class']});
+      const sheet=doc.getElementById('invoiceSheet');
+      if(sheet)new win.MutationObserver(run).observe(sheet,{childList:true,subtree:true,characterData:true});
+      win.addEventListener('resize',run);run();
+    }
+    boot.classList.add('hide');frame.style.display='block';return true;
+  }
   if(!doc.getElementById('bb-daily-mobile-css')){const link=doc.createElement('link');link.id='bb-daily-mobile-css';link.rel='stylesheet';link.href='mobile-daily-sale.css?v=20260915-1';doc.head.appendChild(link)}
   let backdrop=doc.getElementById('bbDailyFilterBackdrop');if(!backdrop){backdrop=doc.createElement('div');backdrop.id='bbDailyFilterBackdrop';backdrop.className='bb-daily-filter-backdrop';doc.body.appendChild(backdrop)}
   if(!filters.querySelector('.bb-daily-filter-head')){const h=doc.createElement('div');h.className='bb-daily-filter-head';h.innerHTML='<div><strong>Filter Daily Sales</strong><span>Date, salesman and location</span></div><button type="button" class="bb-daily-filter-close" aria-label="Close">×</button>';filters.insertBefore(h,filters.firstChild)}
@@ -39,7 +60,7 @@ function inject(){let doc,win;try{doc=frame.contentDocument||frame.contentWindow
 try{
   await assertPermission();
   frame.addEventListener('load',()=>{setTimeout(inject,60);setTimeout(inject,300);setTimeout(inject,900)});
-  frame.src='index.html?embed=1&mobileSkin=1&v=20260915-1';
+  frame.src='index.html?embed=1&mobileSkin=2&v=20261128-daily-sale-hd-v2b';
   let tries=0;const timer=setInterval(()=>{tries++;try{if(inject()||tries>20)clearInterval(timer)}catch(_){if(tries>20)clearInterval(timer)}},150);
 }catch(error){console.error('Daily Sale Summary Mobile:',error);showError(error?.message||error)}
 })();
