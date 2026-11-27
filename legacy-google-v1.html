@@ -542,6 +542,8 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
  #summaryBody td.empty{grid-column:1/-1;grid-row:auto;padding:16px;text-align:center}
 }
 
+
+.bb-overview-location{display:inline-flex;align-items:center;gap:5px;max-width:100%;vertical-align:middle}.bb-overview-location svg{flex:none;color:#52677f}.bb-overview-location strong{min-width:0;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -676,7 +678,7 @@ function renderGroups(){
   const totalUsd=filteredGroups.reduce((x,g)=>x+g.totalUSD,0),totalKhr=filteredGroups.reduce((x,g)=>x+g.totalKHR,0);const allComplete=filteredGroups.every(g=>g.rateComplete);const dailyUsd=filteredGroups.reduce((x,g)=>x+(g.dailySaleUSD==null?0:g.dailySaleUSD),0);
   $('cardUsd').textContent=usd(totalUsd);$('cardKhr').textContent=khr(totalKhr);$('cardDailyUsd').textContent=allComplete?usd(dailyUsd):'Rate Missing';
   if(!filteredGroups.length){$('summaryBody').innerHTML='<tr><td colspan="11" class="empty">No Daily Sale groups found.</td></tr>';return}
-  $('summaryBody').innerHTML=filteredGroups.map(g=>`<tr><td><strong>${esc(displaySaleDate(g.saleDate))}</strong></td><td>${esc(g.salesman)}</td><td><strong>${esc(saleLocationName(g.locationCode))}</strong></td><td class="center"><strong>${esc(g.invoiceRange)}</strong><small class="bb-overview-invoice-count">${g.invoiceCount} invoices</small></td><td class="money">${usd(g.totalUSD)}</td><td class="money">${khr(g.totalKHR)}</td><td class="money ${g.rateComplete?'':'warn'}">${g.totalKHR? (g.rateComplete?rate(g.avgRate):'Missing Rate'):'-'}</td><td class="money daily-key">${g.dailySaleUSD==null?'—':usd(g.dailySaleUSD)}</td><td class="money">${usd(g.recvUSD)}</td><td class="money">${khr(g.recvKHR)}</td><td><button class="btn primary" onclick="openPreview(${esc(JSON.stringify(g.key))})">Preview</button></td></tr>`).join('');
+  $('summaryBody').innerHTML=filteredGroups.map(g=>`<tr><td><strong>${esc(displaySaleDate(g.saleDate))}</strong></td><td>${esc(g.salesman)}</td><td><span class="bb-overview-location"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><strong>${esc(saleLocationName(g.locationCode))}</strong></span></td><td class="center"><strong>${esc(g.invoiceRange)}</strong><small class="bb-overview-invoice-count">${g.invoiceCount} invoices</small></td><td class="money">${usd(g.totalUSD)}</td><td class="money">${khr(g.totalKHR)}</td><td class="money ${g.rateComplete?'':'warn'}">${g.totalKHR? (g.rateComplete?rate(g.avgRate):'Missing Rate'):'-'}</td><td class="money daily-key">${g.dailySaleUSD==null?'—':usd(g.dailySaleUSD)}</td><td class="money">${usd(g.recvUSD)}</td><td class="money">${khr(g.recvKHR)}</td><td><button class="btn primary" onclick="openPreview(${esc(JSON.stringify(g.key))})">Preview</button></td></tr>`).join('');
   labelSaleCells('summaryBody',['Sale date','Salesman','Location','Invoice range','Sale USD','Sale KHR','Avg. KHR rate','USD equivalent','Receivable USD','Receivable KHR','Action']);
 }
 function clearFilters(){$('dateFrom').value='';$('dateTo').value='';$('salesmanFilter').value='';$('locationFilter').value='';applyFilters()}
