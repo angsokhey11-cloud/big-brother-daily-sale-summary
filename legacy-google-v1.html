@@ -23,6 +23,7 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
 .bb-sale-filters .filters{border-bottom:0}
 .bb-sale-date{display:flex;flex-direction:column;gap:5px;min-width:0;color:var(--muted);font-size:11px;font-weight:700}
 .bb-sale-date input{min-width:0;font-size:14px;font-weight:400}
+@media(min-width:701px){.bb-sale-filters>summary,.bb-sale-date>span{display:none}.bb-sale-filters{background:#fff}.bb-sale-filters .filters{align-items:center}}
 .bb-sale-functions-toggle,.bb-row-functions{display:none}
 .bb-digital-report{position:fixed;left:-12000px;top:0;width:560px;padding:24px;background:#fff;color:#17304f;font:19px/1.45 Arial,Helvetica,'Noto Sans Khmer',sans-serif;overflow-wrap:anywhere}
 .bb-digital-report *{box-sizing:border-box}
@@ -118,8 +119,8 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
   </div>
   <div class="panel">
     <details class="bb-sale-filters" id="bbSaleFilters" open><summary><span>Filters</span><span class="bb-sale-filter-hint" id="bbSaleFilterHint">All sales · Hide filters ▴</span></summary><div class="filters">
-      <label class="bb-sale-date">From date<input type="date" id="dateFrom" onchange="applyFilters()" title="Date From"></label>
-      <label class="bb-sale-date">To date<input type="date" id="dateTo" onchange="applyFilters()" title="Date To"></label>
+      <label class="bb-sale-date"><span>From date</span><input type="date" id="dateFrom" onchange="applyFilters()" title="Date From"></label>
+      <label class="bb-sale-date"><span>To date</span><input type="date" id="dateTo" onchange="applyFilters()" title="Date To"></label>
       <select id="salesmanFilter" onchange="applyFilters()"><option value="">All Salesmen</option></select>
       <select id="locationFilter" onchange="applyFilters()"><option value="">All Locations</option></select>
       <button class="btn secondary" onclick="clearFilters()">Clear</button>
@@ -357,8 +358,12 @@ function setSaleFunctionsOpen(open){
 function openSaleFunctions(key){openPreview(key);setSaleFunctionsOpen(true);}
 function setupSaleV2(){
   const filter=$('bbSaleFilters');if(!filter)return;
-  if(window.matchMedia('(max-width:700px)').matches)filter.open=false;
-  filter.addEventListener('toggle',updateSaleFilterHint);updateSaleFilterHint();
+  const media=window.matchMedia('(max-width:700px)');
+  const fit=function(){filter.open=!media.matches;updateSaleFilterHint();};
+  fit();
+  if(media.addEventListener)media.addEventListener('change',fit);
+  else if(media.addListener)media.addListener(fit);
+  filter.addEventListener('toggle',updateSaleFilterHint);
 }
 async function readySaleFonts(){
   if(document.fonts&&document.fonts.ready)await document.fonts.ready;
