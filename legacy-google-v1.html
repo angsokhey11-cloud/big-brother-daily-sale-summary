@@ -127,6 +127,33 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
  .bb-summary-zoom{padding:2px 3px 5px}
 }
 
+
+.bb-compact-customers{display:none}
+.bb-sale-function-menu{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+@media(max-width:700px){
+ #previewOverlay .detail-card>.tablewrap{display:none}
+ #previewOverlay .bb-compact-customers{display:block;margin:8px 0 12px;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff}
+ .bb-customer-list-head,.bb-customer-list-row{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) 66px;align-items:center;gap:7px;padding:9px 7px}
+ .bb-customer-list-head{background:#f0f5fb;color:var(--muted);font-size:11px;font-weight:700}
+ .bb-customer-list-row{border-top:1px solid var(--line);font-size:13px;min-height:48px}
+ .bb-customer-name,.bb-customer-amount{min-width:0;overflow-wrap:anywhere}
+ .bb-customer-name strong{display:block;line-height:1.35}
+ .bb-customer-name small{display:block;font-size:10px;color:var(--muted);margin-top:3px}
+ .bb-customer-amount{text-align:right}
+ .bb-customer-action .btn,.bb-customer-action select{width:100%;min-width:0;font-size:10px;padding:6px 3px;min-height:32px}
+ #previewOverlay .modal-actions{position:relative;top:auto;z-index:3}
+ #previewOverlay .modal-actions-right{position:relative;display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px}
+ #previewOverlay #bbSaleFunctionsToggle{background:#1f5fbf;color:#fff}
+ #previewOverlay .bb-sale-function-menu{display:none;position:absolute;top:calc(100% + 5px);left:0;right:0;background:#fff;padding:5px;border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px #17304f33;z-index:5}
+ #previewOverlay .bb-open .bb-sale-function-menu{display:grid;grid-template-columns:1fr;gap:0}
+ #previewOverlay .bb-open .bb-sale-function-menu .btn{display:block;width:100%;text-align:left;background:#fff;color:#17304f;border:0;border-radius:0;padding:12px;font-size:14px}
+ #previewOverlay .bb-open .bb-sale-function-menu .btn+.btn{border-top:1px solid var(--line)}
+ #previewOverlay .bb-open .bb-sale-function-menu .btn:disabled{opacity:.45}
+ #previewOverlay .preview-meta{grid-template-columns:1fr 1fr}
+ #previewOverlay .meta-box:nth-child(-n+3){display:none}
+ #previewOverlay .meta-box:last-child{grid-column:1/-1}
+}
+
 </style>
 </head>
 <body>
@@ -166,17 +193,20 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
     <div class="modal-actions">
       <div class="modal-title"><h2>Daily Sale Preview</h2><p id="previewSubtitle"></p></div>
       <div class="modal-actions-right" id="bbSaleActions">
-        <button type="button" class="btn secondary bb-sale-functions-toggle" id="bbSaleFunctionsToggle" aria-expanded="false" aria-controls="bbSaleActions" onclick="setSaleFunctionsOpen(!this.closest('.modal-actions-right').classList.contains('bb-open'))">Functions ▾</button>
-        <button class="btn secondary bb-function-action" id="previewSummaryBtn" onclick="openSummaryPreview()" disabled>👁 Preview Summary</button>
-        <button class="btn primary bb-function-action" id="shareTelegramBtn" onclick="shareDailySaleToTelegram()" disabled>📨 Share Telegram</button>
-        <button class="btn primary bb-function-action" id="downloadSummaryBtn" onclick="downloadDailySaleSummary()" disabled>⬇ Download PDF</button>
-        <button class="btn primary bb-function-action" id="downloadPictureBtn" onclick="downloadDailySalePicture()" disabled>🖼 Download Picture</button>
+        <button type="button" class="btn secondary bb-sale-functions-toggle" id="bbSaleFunctionsToggle" aria-expanded="false" aria-controls="bbSaleFunctionMenu" onclick="setSaleFunctionsOpen(!this.closest('.modal-actions-right').classList.contains('bb-open'))">Functions ▾</button>
+        <div id="bbSaleFunctionMenu" class="bb-sale-function-menu">
+        <button class="btn secondary bb-function-action" id="previewSummaryBtn" onclick="setSaleFunctionsOpen(false);openSummaryPreview()" disabled>Preview Summary</button>
+        <button class="btn primary bb-function-action" id="shareTelegramBtn" onclick="setSaleFunctionsOpen(false);shareDailySaleToTelegram()" disabled>Share to Telegram</button>
+        <button class="btn primary bb-function-action" id="downloadSummaryBtn" onclick="setSaleFunctionsOpen(false);downloadDailySaleSummary()" disabled>Download PDF</button>
+        <button class="btn primary bb-function-action" id="downloadPictureBtn" onclick="setSaleFunctionsOpen(false);downloadDailySalePicture()" disabled>Download Picture</button>
+        </div>
         <button class="btn secondary bb-close-action" onclick="closePreview()">✕ Close</button>
       </div>
     </div>
     <div class="detail-card">
       <div class="preview-meta" id="previewMeta"></div>
       <div class="tablewrap"><table class="preview-table"><thead><tr><th>Customer</th><th>Sold Products</th><th>Payment</th><th class="money">Grand Total</th><th class="money">Outstanding</th><th>Status</th><th>Action</th></tr></thead><tbody id="previewBody"></tbody></table></div>
+      <div class="bb-compact-customers" id="bbCompactCustomers"></div>
       <div class="totals" id="previewTotals"></div>
     </div>
   </div>
@@ -311,6 +341,27 @@ function invoiceActionHtml(row){
   }).join('');
   return '<select class="invoice-picker" onchange="if(this.value){openInvoicePreview(this.value);this.selectedIndex=0}"><option value="">View '+row.invoices.length+' Invoices</option>'+opts+'</select>';
 }
+function compactSaleCustomers(invoices){
+  const map=new Map();
+  for(const inv of invoices||[]){
+    const name=String(inv.customer||'-').trim()||'-';
+    const id=String(inv.customerId||'').trim();
+    const key=id?'id:'+id:'name:'+name.toLowerCase();
+    if(!map.has(key))map.set(key,{customer:name,invoices:[],totalUSD:0,totalKHR:0,outUSD:0,outKHR:0,statuses:new Set()});
+    const row=map.get(key),isKHR=String(inv.currency||'USD').toUpperCase()==='KHR';
+    row.invoices.push(inv);row[isKHR?'totalKHR':'totalUSD']+=num(inv.grandTotal);row[isKHR?'outKHR':'outUSD']+=num(inv.outstanding);row.statuses.add(String(inv.status||inv.invoiceType||'-').trim()||'-');
+  }
+  return Array.from(map.values());
+}
+function renderCompactSaleCustomers(g){
+  const host=$('bbCompactCustomers');if(!host)return;
+  const rows=compactSaleCustomers(g.invoices);
+  host.innerHTML='<div class="bb-customer-list-head"><span>Customer · '+rows.length+'</span><span>Grand total</span><span>Invoice</span></div>'+rows.map(row=>{
+    const count=row.invoices.length;
+    const status=Array.from(row.statuses).join(' / ');
+    return '<div class="bb-customer-list-row"><div class="bb-customer-name"><strong>'+esc(row.customer)+'</strong><small>'+esc(status)+(row.outUSD||row.outKHR?' · Due '+combinedMoney(row.outUSD,row.outKHR):'')+'</small></div><strong class="bb-customer-amount">'+combinedMoney(row.totalUSD,row.totalKHR)+'</strong><div class="bb-customer-action">'+invoiceActionHtml(row)+'</div></div>';
+  }).join('');
+}
 function renderCustomerRows(){
   if(!currentCustomerRows.length){
     $('previewBody').innerHTML='<tr><td colspan="7" class="empty">No invoice sales found.</td></tr>';
@@ -336,6 +387,7 @@ async function openPreview(key){
   $('previewMeta').innerHTML='<div class="meta-box"><small>Sale Date</small><strong>'+esc(g.saleDate)+'</strong></div><div class="meta-box"><small>Salesman</small><strong>'+esc(g.salesman)+'</strong></div><div class="meta-box"><small>Location Code</small><strong>'+esc(g.locationCode)+'</strong></div><div class="meta-box"><small>Invoice Range</small><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div>';
   $('previewBody').innerHTML='<tr><td colspan="7" class="empty">Loading invoice products…</td></tr>';
   renderPreviewTotals(g);
+  renderCompactSaleCustomers(g);
   currentCustomerRows=[];
   $('previewSummaryBtn').disabled=true;
   $('shareTelegramBtn').disabled=true;
@@ -381,6 +433,8 @@ function setSaleFunctionsOpen(open){
   const a=$('bbSaleActions'),b=$('bbSaleFunctionsToggle');if(!a||!b)return;
   a.classList.toggle('bb-open',!!open);b.setAttribute('aria-expanded',String(!!open));b.textContent=open?'Functions ▴':'Functions ▾';
 }
+document.addEventListener('click',function(event){const a=$('bbSaleActions');if(a&&a.classList.contains('bb-open')&&!a.contains(event.target))setSaleFunctionsOpen(false);});
+document.addEventListener('keydown',function(event){if(event.key==='Escape')setSaleFunctionsOpen(false);});
 function openSaleFunctions(key){openPreview(key);setSaleFunctionsOpen(true);}
 function setupSaleV2(){
   const filter=$('bbSaleFilters');if(!filter)return;
