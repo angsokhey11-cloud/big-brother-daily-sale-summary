@@ -560,16 +560,27 @@ async function downloadDailySaleSummary(){
 }
 async function downloadDailySalePicture(){
   if(!currentGroup||!currentCustomerRows.length)return;
-  const g=currentGroup,rows=currentCustomerRows.slice(),btn=$('downloadPictureBtn'),old=btn.textContent;
-  btn.disabled=true;btn.textContent='Preparing HD Picture…';let pages=[];
+  const g=currentGroup,btn=$('downloadPictureBtn'),old=btn.textContent;
+  btn.disabled=true;btn.textContent='Preparing HD Pictures…';let pages=[];
   try{
-    await readySaleFonts();pages=buildDigitalSalePages(g,rows);
+    if(typeof window.html2canvas!=='function')throw new Error('Picture library is not ready. Please try again.');
+    pages=buildDailySalePdfPages();
     if(!pages.length)throw new Error('No Daily Sale rows to export.');
+    await readySaleFonts();
     for(let i=0;i<pages.length;i++){
       btn.textContent='Preparing '+(i+1)+'/'+pages.length+'…';
-      const canvas=await renderDigitalSaleCanvas(pages[i]),link=document.createElement('a');
-      link.href=canvas.toDataURL('image/png');link.download=saleDigitalFilename(g,i,pages.length,'png');
-      document.body.appendChild(link);link.click();link.remove();canvas.width=0;canvas.height=0;
+      const report=pages[i],w=report.offsetWidth,h=report.offsetHeight;
+      const scale=Math.min(3,8192/Math.max(w,h),Math.sqrt(18000000/(w*h)));
+      if(!Number.isFinite(scale)||scale<=0)throw new Error('Could not measure report page.');
+      const canvas=await window.html2canvas(report,{scale:scale,backgroundColor:'#ffffff',useCORS:true,logging:false});
+      try{
+        const blob=await new Promise((resolve,reject)=>canvas.toBlob(value=>value?resolve(value):reject(new Error('Could not encode report picture.')),'image/png'));
+        const url=URL.createObjectURL(blob),link=document.createElement('a');
+        try{
+          link.href=url;link.download=saleDigitalFilename(g,i,pages.length,'png');
+          document.body.appendChild(link);link.click();
+        }finally{link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);}
+      }finally{canvas.width=0;canvas.height=0;}
     }
   }catch(error){console.error(error);alert(error.message||'Could not download Daily Sale picture.');}
   finally{pages.forEach(function(page){page.remove();});btn.disabled=false;btn.textContent=old;}
