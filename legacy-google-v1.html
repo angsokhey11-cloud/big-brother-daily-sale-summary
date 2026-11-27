@@ -14,6 +14,93 @@
 
 /* Khmer glyph fallback; preserve existing English sizes and layout. */
 html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer',sans-serif}
+
+/* Daily Sale V2: mobile-only application layout; shared digital report layout. */
+.bb-sale-filters{border-bottom:1px solid var(--line);background:#fafcff}
+.bb-sale-filters>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;cursor:pointer;list-style:none;color:#244f7b;font-size:13px;font-weight:800}
+.bb-sale-filters>summary::-webkit-details-marker{display:none}
+.bb-sale-filter-hint{font-size:11px;color:#527496;text-align:right;overflow-wrap:anywhere}
+.bb-sale-filters .filters{border-bottom:0}
+.bb-sale-date{display:flex;flex-direction:column;gap:5px;min-width:0;color:var(--muted);font-size:11px;font-weight:700}
+.bb-sale-date input{min-width:0;font-size:14px;font-weight:400}
+.bb-sale-functions-toggle,.bb-row-functions{display:none}
+.bb-digital-report{position:fixed;left:-12000px;top:0;width:560px;padding:24px;background:#fff;color:#17304f;font:19px/1.45 Arial,Helvetica,'Noto Sans Khmer',sans-serif;overflow-wrap:anywhere}
+.bb-digital-report *{box-sizing:border-box}
+.bb-digital-report h1{font-size:31px;line-height:1.25;color:#174b98;margin:0}
+.bb-report-subtitle{font-size:21px;font-weight:800;margin:4px 0 12px;color:#17304f}
+.bb-report-meta{border-top:3px solid #2456a6;padding-top:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 15px;margin-bottom:14px}
+.bb-report-meta>div{min-width:0}
+.bb-report-meta small,.bb-report-row small{display:block;font-size:15px;color:#60748a;font-weight:700}
+.bb-report-meta strong{font-size:19px}
+.bb-report-range{grid-column:1/-1}
+.bb-report-rows{border-top:1px solid #dfe6ef}
+.bb-report-row{padding:13px 0;border-bottom:1px solid #dfe6ef}
+.bb-report-row h3{font-size:22px;line-height:1.35;margin:3px 0 8px;color:#17304f}
+.bb-report-product{padding:2px 0;font-size:19px;color:#30455d;white-space:normal}
+.bb-report-row-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:8px}
+.bb-report-row-foot>div{min-width:0}
+.bb-report-row-foot strong{display:block;font-size:22px;text-align:right}
+.bb-report-state{font-size:15px;color:#52677e}
+.bb-digital-report .report-totals{margin-top:16px;width:100%;border-top:3px solid #2456a6}
+.bb-digital-report .total-row{font-size:18px;padding:9px 0;gap:8px;align-items:baseline}
+.bb-digital-report .total-row strong{white-space:normal;text-align:right;overflow-wrap:anywhere}
+.bb-digital-report .total-row.key{font-size:22px;padding:10px 8px}
+.bb-report-page-number{margin-top:12px;text-align:right;color:#60748a;font-size:14px;font-weight:700}
+.bb-digital-report.summary-preview-page{position:static;left:auto;top:auto;width:100%;max-width:560px;flex:none;border:1px solid #dfe6ef;border-radius:12px;margin:0 auto;box-shadow:0 5px 16px #17304f12}
+#summaryPreviewPages{align-items:stretch;overflow-x:hidden;min-width:0}
+@media(max-width:700px){
+ .wrap,.panel,.detail-card,.modal{min-width:0}
+ .card strong{font-size:clamp(14px,4.1vw,21px);overflow-wrap:anywhere}
+ .bb-sale-filters .filters{grid-template-columns:repeat(2,minmax(0,1fr));padding:12px;gap:8px}
+ .bb-sale-filters .filters input,.bb-sale-filters .filters select{min-width:0;max-width:100%}
+ .bb-sale-filters .filters select{grid-column:1/-1}
+ .bb-sale-filters .filters .btn{min-height:42px}
+ .bb-summary-table,.preview-table{display:block;width:100%;min-width:0!important}
+ .bb-summary-table thead,.preview-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+ #summaryBody,#previewBody{display:block;width:100%;padding:8px}
+ #summaryBody tr,#previewBody tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 12px;border:1px solid var(--line);border-radius:12px;padding:13px;margin:0 0 10px;background:#fff}
+ #summaryBody td,#previewBody td{display:block;min-width:0;max-width:none;white-space:normal;text-align:left;border:0;padding:0;overflow-wrap:anywhere;font-size:13px}
+ #summaryBody td:before,#previewBody td:before{display:block;color:var(--muted);font-size:11px;font-weight:700;margin-bottom:3px;content:attr(data-label)}
+ #summaryBody td:nth-child(2),#summaryBody td:nth-child(4),#summaryBody td:nth-child(11),#previewBody td:nth-child(1),#previewBody td:nth-child(2),#previewBody td:nth-child(7){grid-column:1/-1}
+ #summaryBody td:nth-child(2),#previewBody td:first-child{font-size:16px;font-weight:700}
+ #summaryBody td:nth-child(8){background:#eef5ff;padding:7px;border-radius:7px;font-size:15px}
+ #summaryBody td:last-child{display:flex;gap:8px}
+ #summaryBody td:last-child .btn{flex:1;min-height:42px}
+ #summaryBody td:last-child:before,#previewBody td:last-child:before{display:none}
+ #summaryBody td.empty,#previewBody td.empty{grid-column:1/-1;text-align:center;padding:16px}
+ #summaryBody td.empty:before,#previewBody td.empty:before{display:none}
+ .bb-row-functions{display:inline-block}
+ #previewOverlay,#summaryPreviewOverlay{padding:6px}
+ #previewOverlay .modal,#summaryPreviewOverlay .modal{width:100%;max-width:100%;max-height:calc(100vh - 12px);max-height:calc(100dvh - 12px);padding:10px;overflow-x:hidden;border-radius:12px}
+ #previewOverlay .modal-actions,#summaryPreviewOverlay .modal-actions{display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px;padding:5px 0 9px}
+ #previewOverlay .modal-title,#summaryPreviewOverlay .modal-title{flex:1 1 170px;min-width:0}
+ #previewOverlay .modal-title h2,#summaryPreviewOverlay .modal-title h2{font-size:18px}
+ #previewOverlay .modal-actions-right{display:flex;flex-wrap:wrap;width:100%;gap:6px;min-width:0}
+ #previewOverlay .modal-actions-right .btn{flex:1 1 auto;min-height:40px}
+ #previewOverlay .modal-actions-right:not(.bb-open) .bb-function-action{display:none}
+ #previewOverlay .modal-actions-right .bb-sale-functions-toggle{display:inline-block}
+ #previewOverlay .modal-actions-right .bb-close-action{display:inline-block}
+ #previewOverlay .detail-card{padding:10px}
+ #previewOverlay .preview-meta{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:10px}
+ #previewOverlay .meta-box{min-width:0;padding:8px}
+ #previewOverlay .meta-box strong{font-size:13px;overflow-wrap:anywhere}
+ #previewOverlay .meta-box:last-child{grid-column:1/-1}
+ #previewOverlay .tablewrap{overflow:visible}
+ #previewBody{padding:0}
+ #previewBody .sold-products{min-width:0!important;max-width:none}
+ #previewBody .invoice-picker{max-width:100%}
+ #previewOverlay .total-row{gap:8px;padding:8px 0}
+ #previewOverlay .total-row strong{white-space:normal;text-align:right;overflow-wrap:anywhere}
+ .bb-digital-report.summary-preview-page{padding:15px;font-size:15px}
+ .summary-preview-page h1{font-size:25px}
+ .summary-preview-page .bb-report-subtitle{font-size:18px}
+ .summary-preview-page .bb-report-meta strong,.summary-preview-page .bb-report-product{font-size:15px}
+ .summary-preview-page .bb-report-meta small,.summary-preview-page .bb-report-row small,.summary-preview-page .bb-report-state{font-size:12px}
+ .summary-preview-page .bb-report-row h3,.summary-preview-page .bb-report-row-foot strong{font-size:17px}
+ .summary-preview-page .total-row{font-size:14px}
+ .summary-preview-page .total-row.key{font-size:17px}
+}
+
 </style>
 </head>
 <body>
@@ -30,16 +117,16 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
     <div class="card"><small>Daily Sale USD Equivalent</small><strong id="cardDailyUsd">$0.00</strong></div>
   </div>
   <div class="panel">
-    <div class="filters">
-      <input type="date" id="dateFrom" onchange="applyFilters()" title="Date From">
-      <input type="date" id="dateTo" onchange="applyFilters()" title="Date To">
+    <details class="bb-sale-filters" id="bbSaleFilters" open><summary><span>Filters</span><span class="bb-sale-filter-hint" id="bbSaleFilterHint">All sales · Hide filters ▴</span></summary><div class="filters">
+      <label class="bb-sale-date">From date<input type="date" id="dateFrom" onchange="applyFilters()" title="Date From"></label>
+      <label class="bb-sale-date">To date<input type="date" id="dateTo" onchange="applyFilters()" title="Date To"></label>
       <select id="salesmanFilter" onchange="applyFilters()"><option value="">All Salesmen</option></select>
       <select id="locationFilter" onchange="applyFilters()"><option value="">All Locations</option></select>
       <button class="btn secondary" onclick="clearFilters()">Clear</button>
       <button class="btn primary" id="refreshBtn" onclick="loadInvoices(true)">↻ Refresh</button>
-    </div>
+    </div></details>
     <div class="tablewrap">
-      <table>
+      <table class="bb-summary-table">
         <thead><tr><th>Sale Date</th><th>Salesman</th><th>Location Code</th><th class="center">Invoice Range</th><th class="money">Total Sale USD</th><th class="money">Total Sale KHR</th><th class="money">Avg. KHR Rate</th><th class="money">Daily Sale in USD</th><th class="money">Receivable USD</th><th class="money">Receivable KHR</th><th>Action</th></tr></thead>
         <tbody id="summaryBody"><tr><td colspan="11" class="empty">Loading Daily Sale Summary...</td></tr></tbody>
       </table>
@@ -52,12 +139,13 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
   <div class="modal">
     <div class="modal-actions">
       <div class="modal-title"><h2>Daily Sale Preview</h2><p id="previewSubtitle"></p></div>
-      <div class="modal-actions-right">
-        <button class="btn secondary" id="previewSummaryBtn" onclick="openSummaryPreview()" disabled>👁 Preview Summary</button>
-        <button class="btn primary" id="shareTelegramBtn" onclick="shareDailySaleToTelegram()" disabled>📨 Share Telegram</button>
-        <button class="btn primary" id="downloadSummaryBtn" onclick="downloadDailySaleSummary()" disabled>⬇ Download PDF</button>
-        <button class="btn primary" id="downloadPictureBtn" onclick="downloadDailySalePicture()" disabled>🖼 Download Picture</button>
-        <button class="btn secondary" onclick="closePreview()">✕ Close</button>
+      <div class="modal-actions-right" id="bbSaleActions">
+        <button type="button" class="btn secondary bb-sale-functions-toggle" id="bbSaleFunctionsToggle" aria-expanded="false" aria-controls="bbSaleActions" onclick="setSaleFunctionsOpen(!this.closest('.modal-actions-right').classList.contains('bb-open'))">Functions ▾</button>
+        <button class="btn secondary bb-function-action" id="previewSummaryBtn" onclick="openSummaryPreview()" disabled>👁 Preview Summary</button>
+        <button class="btn primary bb-function-action" id="shareTelegramBtn" onclick="shareDailySaleToTelegram()" disabled>📨 Share Telegram</button>
+        <button class="btn primary bb-function-action" id="downloadSummaryBtn" onclick="downloadDailySaleSummary()" disabled>⬇ Download PDF</button>
+        <button class="btn primary bb-function-action" id="downloadPictureBtn" onclick="downloadDailySalePicture()" disabled>🖼 Download Picture</button>
+        <button class="btn secondary bb-close-action" onclick="closePreview()">✕ Close</button>
       </div>
     </div>
     <div class="detail-card">
@@ -73,7 +161,7 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
     <div class="modal-actions">
       <div class="modal-title">
         <h2>Daily Sale Summary Preview</h2>
-        <p class="summary-preview-hint">This is the same A4 layout used by Download PDF.</p>
+        <p class="summary-preview-hint">Digital report · optimized for phone viewing and sharing.</p>
       </div>
       <button class="btn secondary" onclick="closeSummaryPreview()">✕ Close</button>
     </div>
@@ -128,11 +216,13 @@ function buildGroups(){const map=new Map();allInvoices.forEach(inv=>{const key=g
 function populateFilters(){const sales=[...new Set(groups.map(g=>g.salesman).filter(v=>v&&v!=='-'))].sort();const locs=[...new Set(groups.map(g=>g.locationCode).filter(v=>v&&v!=='-'))].sort();const s=$('salesmanFilter'),l=$('locationFilter'),sv=s.value,lv=l.value;s.innerHTML='<option value="">All Salesmen</option>'+sales.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');l.innerHTML='<option value="">All Locations</option>'+locs.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');if(sales.includes(sv))s.value=sv;if(locs.includes(lv))l.value=lv}
 function applyFilters(){const f=$('dateFrom').value,t=$('dateTo').value,s=$('salesmanFilter').value,l=$('locationFilter').value;filteredGroups=groups.filter(g=>(!f||g.saleDate>=f)&&(!t||g.saleDate<=t)&&(!s||g.salesman===s)&&(!l||g.locationCode===l));renderGroups()}
 function renderGroups(){
+  updateSaleFilterHint();
   $('rowCount').textContent=`${filteredGroups.length} summary group${filteredGroups.length===1?'':'s'}`;$('cardGroups').textContent=filteredGroups.length;
   const totalUsd=filteredGroups.reduce((x,g)=>x+g.totalUSD,0),totalKhr=filteredGroups.reduce((x,g)=>x+g.totalKHR,0);const allComplete=filteredGroups.every(g=>g.rateComplete);const dailyUsd=filteredGroups.reduce((x,g)=>x+(g.dailySaleUSD==null?0:g.dailySaleUSD),0);
   $('cardUsd').textContent=usd(totalUsd);$('cardKhr').textContent=khr(totalKhr);$('cardDailyUsd').textContent=allComplete?usd(dailyUsd):'Rate Missing';
   if(!filteredGroups.length){$('summaryBody').innerHTML='<tr><td colspan="11" class="empty">No Daily Sale groups found.</td></tr>';return}
-  $('summaryBody').innerHTML=filteredGroups.map(g=>`<tr><td><strong>${esc(g.saleDate)}</strong></td><td>${esc(g.salesman)}</td><td><strong>${esc(g.locationCode)}</strong></td><td class="center"><strong>${esc(g.invoiceRange)}</strong><br><small>${g.invoiceCount} invoices</small></td><td class="money">${usd(g.totalUSD)}</td><td class="money">${khr(g.totalKHR)}</td><td class="money ${g.rateComplete?'':'warn'}">${g.totalKHR? (g.rateComplete?rate(g.avgRate):'Missing Rate'):'-'}</td><td class="money daily-key">${g.dailySaleUSD==null?'—':usd(g.dailySaleUSD)}</td><td class="money">${usd(g.recvUSD)}</td><td class="money">${khr(g.recvKHR)}</td><td><button class="btn primary" onclick='openPreview(${JSON.stringify(g.key)})'>Preview</button></td></tr>`).join('')
+  $('summaryBody').innerHTML=filteredGroups.map(g=>`<tr><td><strong>${esc(g.saleDate)}</strong></td><td>${esc(g.salesman)}</td><td><strong>${esc(g.locationCode)}</strong></td><td class="center"><strong>${esc(g.invoiceRange)}</strong><br><small>${g.invoiceCount} invoices</small></td><td class="money">${usd(g.totalUSD)}</td><td class="money">${khr(g.totalKHR)}</td><td class="money ${g.rateComplete?'':'warn'}">${g.totalKHR? (g.rateComplete?rate(g.avgRate):'Missing Rate'):'-'}</td><td class="money daily-key">${g.dailySaleUSD==null?'—':usd(g.dailySaleUSD)}</td><td class="money">${usd(g.recvUSD)}</td><td class="money">${khr(g.recvKHR)}</td><td><button class="btn primary" onclick="openPreview(${esc(JSON.stringify(g.key))})">Preview</button><button class="btn secondary bb-row-functions" onclick="openSaleFunctions(${esc(JSON.stringify(g.key))})">Functions ▾</button></td></tr>`).join('');
+  labelSaleCells('summaryBody',['Sale date','Salesman','Location','Invoice range','Sale USD','Sale KHR','Avg. KHR rate','USD equivalent','Receivable USD','Receivable KHR','Action']);
 }
 function clearFilters(){$('dateFrom').value='';$('dateTo').value='';$('salesmanFilter').value='';$('locationFilter').value='';applyFilters()}
 async function loadInvoices(manual=false){const btn=$('refreshBtn');if(manual){btn.disabled=true;btn.textContent='Refreshing…'}showError('');$('syncStatus').textContent='Loading Invoice History…';try{const d=await api({action:'invoiceList'});allInvoices=Array.isArray(d.invoices)?d.invoices:[];buildGroups();$('syncStatus').textContent=`Updated • ${allInvoices.length} invoices`}catch(e){showError(e.message||'Could not load invoice history.');$('summaryBody').innerHTML='<tr><td colspan="11" class="empty">Could not load Daily Sale Summary.</td></tr>'; $('syncStatus').textContent='Load failed'}finally{if(manual){btn.disabled=false;btn.textContent='↻ Refresh'}}}
@@ -204,12 +294,14 @@ function renderCustomerRows(){
     const customerLabel=(row.invoiceNo?'<strong>'+esc(row.invoiceNo)+'</strong> — ':'')+esc(row.customer);
     return '<tr><td>'+customerLabel+'</td><td class="sold-products">'+products+'</td><td>'+esc(Array.from(row.payments).join(', '))+'</td><td class="money">'+combinedMoney(row.totalUSD,row.totalKHR)+'</td><td class="money">'+combinedMoney(row.outUSD,row.outKHR)+'</td><td>'+esc(Array.from(row.statuses).join(', '))+'</td><td>'+invoiceActionHtml(row)+'</td></tr>';
   }).join('');
+  labelSaleCells('previewBody',['Invoice / Customer','Sold products','Payment','Grand total','Outstanding','Status','Action']);
 }
 function renderPreviewTotals(g){
   const converted=g.dailySaleUSD==null?null:(g.totalKHR?g.totalKHR/g.avgRate:0);
   $('previewTotals').innerHTML='<div class="total-row"><span>Total Sale in USD</span><strong>'+usd(g.totalUSD)+'</strong></div><div class="total-row"><span>Total Sale in KHR</span><strong>'+khr(g.totalKHR)+'</strong></div><div class="total-row"><span>Average KHR Exchange Rate</span><strong class="'+(g.rateComplete?'':'warn')+'">'+(g.totalKHR?(g.rateComplete?rate(g.avgRate):'Missing Exchange Rate'):'-')+'</strong></div><div class="total-row"><span>KHR Converted to USD</span><strong>'+(converted==null?'—':usd(converted))+'</strong></div><div class="total-row key"><span>Daily Sale in USD</span><strong>'+(g.dailySaleUSD==null?'—':usd(g.dailySaleUSD))+'</strong></div><div class="total-row recv"><span>Total Receivable USD</span><strong>'+usd(g.recvUSD)+'</strong></div><div class="total-row recv"><span>Total Receivable KHR</span><strong>'+khr(g.recvKHR)+'</strong></div>';
 }
 async function openPreview(key){
+  setSaleFunctionsOpen(false);
   currentGroup=groups.find(function(g){return g.key===key});
   if(!currentGroup)return;
   const g=currentGroup;
@@ -244,6 +336,82 @@ function reportTotalsHtml(g){
   const converted=g.dailySaleUSD==null?null:(g.totalKHR?g.totalKHR/g.avgRate:0);
   return '<div class="total-row"><span>Total Sale in USD</span><strong>'+usd(g.totalUSD)+'</strong></div><div class="total-row"><span>Total Sale in KHR</span><strong>'+khr(g.totalKHR)+'</strong></div><div class="total-row"><span>KHR Converted to USD</span><strong>'+(converted==null?'—':usd(converted))+'</strong></div><div class="total-row key"><span>Daily Sale in USD</span><strong>'+(g.dailySaleUSD==null?'—':usd(g.dailySaleUSD))+'</strong></div>';
 }
+
+function labelSaleCells(id,labels){
+  Array.from($(id).rows).forEach(function(row){
+    Array.from(row.cells).forEach(function(cell,i){if(!cell.classList.contains('empty'))cell.dataset.label=labels[i]||'';});
+  });
+}
+function updateSaleFilterHint(){
+  const d=$('bbSaleFilters');if(!d)return;
+  const parts=[$('dateFrom').value||'', $('dateTo').value||''];
+  const text=(parts[0]||parts[1]?[parts[0]||'Any date',parts[1]||'Any date'].join(' – '):'All dates')+
+    ($('salesmanFilter').value?' · '+$('salesmanFilter').value:'')+
+    ($('locationFilter').value?' · '+$('locationFilter').value:'');
+  $('bbSaleFilterHint').textContent=text+(d.open?' · Hide ▴':' · Show ▾');
+}
+function setSaleFunctionsOpen(open){
+  const a=$('bbSaleActions'),b=$('bbSaleFunctionsToggle');if(!a||!b)return;
+  a.classList.toggle('bb-open',!!open);b.setAttribute('aria-expanded',String(!!open));b.textContent=open?'Functions ▴':'Functions ▾';
+}
+function openSaleFunctions(key){openPreview(key);setSaleFunctionsOpen(true);}
+function setupSaleV2(){
+  const filter=$('bbSaleFilters');if(!filter)return;
+  if(window.matchMedia('(max-width:700px)').matches)filter.open=false;
+  filter.addEventListener('toggle',updateSaleFilterHint);updateSaleFilterHint();
+}
+async function readySaleFonts(){
+  if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+}
+function buildDigitalSalePages(g,rows){
+  if(!g||!rows.length)return [];
+  const pages=[],maxHeight=1120;
+  function makePage(){
+    const page=document.createElement('div');page.className='bb-digital-report';
+    page.innerHTML='<h1>BIG BROTHER</h1><div class="bb-report-subtitle">Daily Sale Summary</div>'+
+      '<div class="bb-report-meta"><div><small>Sale Date</small><strong>'+esc(g.saleDate)+'</strong></div>'+
+      '<div><small>Location</small><strong>'+esc(g.locationCode)+'</strong></div>'+
+      '<div class="bb-report-range"><small>Salesman</small><strong>'+esc(g.salesman)+'</strong></div>'+
+      '<div class="bb-report-range"><small>Invoice Range · '+g.invoiceCount+' invoices</small><strong>'+esc(g.invoiceRange)+'</strong></div></div>'+
+      '<div class="bb-report-rows"></div><div class="bb-report-page-number">Part 00 / 00</div>';
+    document.body.appendChild(page);pages.push(page);return page;
+  }
+  function makeRow(row,i){
+    const item=document.createElement('article');item.className='bb-report-row';
+    item.innerHTML='<small>'+esc(row.invoiceNo||('Invoice '+(i+1)))+'</small><h3>'+esc(row.customer)+'</h3>'+
+      (row.products.length?row.products.map(function(p){return '<div class="bb-report-product">'+esc(p)+'</div>';}).join(''):'<div class="bb-report-product">Product detail unavailable</div>')+
+      '<div class="bb-report-row-foot"><div class="bb-report-state">'+esc(Array.from(row.payments).join(', '))+' · '+esc(Array.from(row.statuses).join(', '))+
+      '<div>Outstanding: '+combinedMoney(row.outUSD,row.outKHR)+'</div></div><div><small>Grand Total</small><strong>'+combinedMoney(row.totalUSD,row.totalKHR)+'</strong></div></div>';
+    return item;
+  }
+  let page=makePage();
+  try{
+    rows.forEach(function(row,i){
+      const item=makeRow(row,i);let body=page.querySelector('.bb-report-rows');body.appendChild(item);
+      if(page.offsetHeight>maxHeight&&body.children.length>1){item.remove();page=makePage();page.querySelector('.bb-report-rows').appendChild(item);}
+    });
+    const totals=document.createElement('div');totals.className='report-totals totals';totals.innerHTML=reportTotalsHtml(g);
+    page.insertBefore(totals,page.querySelector('.bb-report-page-number'));
+    let body=page.querySelector('.bb-report-rows');
+    if(page.offsetHeight>maxHeight&&body.children.length>1){
+      const last=body.lastElementChild;last.remove();totals.remove();page=makePage();page.querySelector('.bb-report-rows').appendChild(last);page.insertBefore(totals,page.querySelector('.bb-report-page-number'));
+    }
+    pages.forEach(function(p,i){p.querySelector('.bb-report-page-number').textContent=pages.length>1?'Part '+(i+1)+' / '+pages.length:'';});
+    return pages;
+  }catch(error){pages.forEach(function(p){p.remove();});throw error;}
+}
+async function renderDigitalSaleCanvas(report){
+  if(typeof window.html2canvas!=='function')throw new Error('Picture library is not ready. Please try again.');
+  await readySaleFonts();
+  const w=report.offsetWidth,h=report.offsetHeight;
+  const scale=Math.min(3,8192/Math.max(w,h),9800/(w+h),Math.sqrt(12000000/(w*h)));
+  if(!w||!h||!Number.isFinite(scale)||scale<0.5)throw new Error('This report part is too large to render safely.');
+  return window.html2canvas(report,{scale:scale,backgroundColor:'#ffffff',useCORS:true,logging:false});
+}
+function saleDigitalFilename(g,i,count,ext){
+  return 'BIG_BROTHER_Daily_Sale_'+safeFilePart(g.saleDate)+'_'+safeFilePart(g.salesman)+'_'+safeFilePart(g.locationCode)+(count>1?'_part_'+(i+1)+'_of_'+count:'')+'.'+ext;
+}
+
 function buildDailySaleReport(){
   if(!currentGroup||!currentCustomerRows.length)return null;
   const g=currentGroup;
@@ -295,19 +463,19 @@ function buildDailySalePdfPages(){
   }
   return pages;
 }
-function openSummaryPreview(){
+async function openSummaryPreview(){
   if(!currentGroup||!currentCustomerRows.length)return;
   closeSummaryPreview();
-  const overlay=$('summaryPreviewOverlay');
-  const container=$('summaryPreviewPages');
-  container.innerHTML='';
-  const pages=buildDailySalePdfPages();
-  pages.forEach(function(page){
-    page.classList.add('summary-preview-page');
-    container.appendChild(page);
-  });
-  if(!pages.length)container.innerHTML='<div class="summary-preview-empty">No Daily Sale rows to preview.</div>';
+  const g=currentGroup,rows=currentCustomerRows.slice(),container=$('summaryPreviewPages'),overlay=$('summaryPreviewOverlay');
   overlay.classList.remove('hidden');
+  try{
+    await readySaleFonts();
+    if(currentGroup!==g||overlay.classList.contains('hidden'))return;
+    const pages=buildDigitalSalePages(g,rows);
+    container.innerHTML='';
+    pages.forEach(function(page){page.classList.add('summary-preview-page');container.appendChild(page);});
+    if(!pages.length)container.innerHTML='<div class="summary-preview-empty">No Daily Sale rows to preview.</div>';
+  }catch(error){container.textContent=error.message||'Could not load summary preview.';}
 }
 function closeSummaryPreview(){
   const overlay=$('summaryPreviewOverlay');
@@ -326,55 +494,28 @@ async function renderReportCanvas(report){
 }
 async function shareDailySaleToTelegram(){
   if(!currentGroup||!currentCustomerRows.length)return;
-  const g=currentGroup;
-  const pageCount=Math.ceil(currentCustomerRows.length/15);
-  if(!confirm('SHARE DAILY SALE TO TELEGRAM\n\nLocation: '+g.locationCode+'\nDate: '+g.saleDate+'\nInvoices: '+g.invoiceCount+'\nPictures: '+pageCount+'\n\nSend now?'))return;
-
-  const btn=$('shareTelegramBtn');
-  const old=btn.textContent;
-  btn.disabled=true;
-  btn.textContent='Preparing Pictures…';
-  let pages=[];
-
+  const g=currentGroup,rows=currentCustomerRows.slice(),btn=$('shareTelegramBtn'),old=btn.textContent;
+  btn.disabled=true;btn.textContent='Preparing HD Pictures…';let pages=[];
   try{
-    pages=buildDailySalePdfPages();
-    if(!pages.length)throw new Error('No Daily Sale rows to share.');
-    if(pages.length>30)throw new Error('Too many report pictures to send at once.');
-
+    await readySaleFonts();pages=buildDigitalSalePages(g,rows);
+    if(!pages.length||pages.length>30)throw new Error('The report needs too many pictures to send at once.');
+    if(!confirm('SHARE DAILY SALE TO TELEGRAM\n\nLocation: '+g.locationCode+'\nDate: '+g.saleDate+'\nInvoices: '+g.invoiceCount+'\nPictures: '+pages.length+'\n\nSend now?'))return;
     const images=[];
     for(let i=0;i<pages.length;i++){
       btn.textContent='Preparing '+(i+1)+'/'+pages.length+'…';
-      const canvas=await renderReportCanvas(pages[i]);
-      const dataUrl=canvas.toDataURL('image/jpeg',0.90);
-      const comma=dataUrl.indexOf(',');
-      if(comma<0)throw new Error('Could not prepare Telegram picture.');
-      images.push({
-        page:i+1,
-        mime:'image/jpeg',
-        data:dataUrl.slice(comma+1)
-      });
+      const canvas=await renderDigitalSaleCanvas(pages[i]);
+      if(Math.max(canvas.width,canvas.height)/Math.min(canvas.width,canvas.height)>20)throw new Error('An invoice has too many product lines to share as a picture. Download the PDF instead.');
+      let mime='image/png',data=canvas.toDataURL(mime).split(',')[1];
+      if(!data||data.length>12000000){mime='image/jpeg';data=canvas.toDataURL(mime,0.97).split(',')[1];}
+      if(!data||data.length>12000000)throw new Error('A Telegram picture is too large.');
+      images.push({page:i+1,mime:mime,data:data});
+      canvas.width=0;canvas.height=0;
     }
-
     btn.textContent='Sending Telegram…';
-    const result=await api({
-      action:'shareDailySaleTelegram',
-      locationCode:g.locationCode,
-      saleDate:g.saleDate,
-      salesman:g.salesman,
-      invoiceRange:g.invoiceRange,
-      invoiceCount:g.invoiceCount,
-      images:images
-    });
-
+    const result=await api({action:'shareDailySaleTelegram',locationCode:g.locationCode,saleDate:g.saleDate,salesman:g.salesman,invoiceRange:g.invoiceRange,invoiceCount:g.invoiceCount,images:images});
     alert((result&&result.message?result.message:'Daily Sale pictures sent to Telegram.')+'\n\nPictures: '+pages.length);
-  }catch(error){
-    console.error(error);
-    alert(error.message||'Could not share Daily Sale pictures to Telegram.');
-  }finally{
-    pages.forEach(function(page){if(page&&page.parentNode)page.parentNode.removeChild(page)});
-    btn.disabled=false;
-    btn.textContent=old;
-  }
+  }catch(error){console.error(error);alert(error.message||'Could not share Daily Sale pictures to Telegram.');}
+  finally{pages.forEach(function(page){page.remove();});btn.disabled=false;btn.textContent=old;}
 }
 async function downloadDailySaleSummary(){
   if(!currentGroup||!currentCustomerRows.length)return;
@@ -414,16 +555,25 @@ async function downloadDailySaleSummary(){
 }
 async function downloadDailySalePicture(){
   if(!currentGroup||!currentCustomerRows.length)return;
-  const btn=$('downloadPictureBtn'),old=btn.textContent;btn.disabled=true;btn.textContent='Preparing Picture…';let report=null;
+  const g=currentGroup,rows=currentCustomerRows.slice(),btn=$('downloadPictureBtn'),old=btn.textContent;
+  btn.disabled=true;btn.textContent='Preparing HD Picture…';let pages=[];
   try{
-    const g=currentGroup;report=buildDailySaleReport();const canvas=await renderReportCanvas(report);const link=document.createElement('a');
-    link.href=canvas.toDataURL('image/png');link.download='BIG_BROTHER_Daily_Sale_'+safeFilePart(g.saleDate)+'_'+safeFilePart(g.salesman)+'_'+safeFilePart(g.locationCode)+'.png';document.body.appendChild(link);link.click();link.remove();
-  }catch(error){console.error(error);alert(error.message||'Could not download Daily Sale picture.')}finally{if(report&&report.parentNode)report.parentNode.removeChild(report);btn.disabled=false;btn.textContent=old}
+    await readySaleFonts();pages=buildDigitalSalePages(g,rows);
+    if(!pages.length)throw new Error('No Daily Sale rows to export.');
+    for(let i=0;i<pages.length;i++){
+      btn.textContent='Preparing '+(i+1)+'/'+pages.length+'…';
+      const canvas=await renderDigitalSaleCanvas(pages[i]),link=document.createElement('a');
+      link.href=canvas.toDataURL('image/png');link.download=saleDigitalFilename(g,i,pages.length,'png');
+      document.body.appendChild(link);link.click();link.remove();canvas.width=0;canvas.height=0;
+    }
+  }catch(error){console.error(error);alert(error.message||'Could not download Daily Sale picture.');}
+  finally{pages.forEach(function(page){page.remove();});btn.disabled=false;btn.textContent=old;}
 }
 function closePreview(){closeSummaryPreview();$('previewOverlay').classList.add('hidden');currentGroup=null;currentCustomerRows=[]}
 async function openInvoicePreview(invoiceNo){$('invoiceOverlay').classList.remove('hidden');$('invoicePreviewSubtitle').textContent=invoiceNo;$('invoiceSheet').innerHTML='<div class="empty">Loading invoice...</div>';try{const d=await api({action:'invoiceDetail',invoiceNo});const inv=d.invoice||d;if(!inv||!inv.invoiceNo)throw new Error('Invoice detail was not returned.');renderInvoice(inv)}catch(e){$('invoiceSheet').innerHTML=`<div class="empty">${esc(e.message||'Could not load invoice.')}</div>`}}
 function closeInvoicePreview(){$('invoiceOverlay').classList.add('hidden')}
 function renderInvoice(inv){const c=String(inv.currency||'USD').toUpperCase(),sym=c==='KHR'?'៛':'$';const fmt=v=>c==='KHR'?khr(v):usd(v);const items=Array.isArray(inv.items)?inv.items:[];const rows=items.map((it,i)=>`<tr><td class="center">${i+1}</td><td><strong>${esc(it.productName||it.description||it.productCode||'')}</strong>${it.unit?`<br><small>${esc(it.unit)}</small>`:''}</td><td class="center">${num(it.qty||it.quantity)}</td><td class="money">${fmt(it.unitPrice)}</td><td class="money">${fmt(it.total||it.amount)}</td></tr>`).join('')||'<tr><td colspan="5" class="empty">No invoice items.</td></tr>';const rateLine=c==='KHR'&&num(inv.exchangeRate)>0?`<div>1 USD = ${rate(inv.exchangeRate)} KHR</div>`:'';$('invoiceSheet').innerHTML=`<div class="inv-header"><div class="inv-brand"><h1>BIG BROTHER</h1><div>Phnom Penh, Cambodia</div><div>010 650 327, 070 998 988</div><div>angsokkhey11@gmail.com</div></div><div class="inv-currency"><div>Currency: <strong>${esc(c)}</strong></div>${rateLine}</div></div><div class="inv-line"></div><div class="inv-title">INVOICE</div><div class="inv-bill"><div><strong>Bill To</strong><br>${esc(inv.customer||'')}${inv.address?'<br>'+esc(inv.address):''}${inv.phone?'<br>'+esc(inv.phone):''}</div><div class="inv-no">${esc(inv.invoiceNo)}<br><span style="font-size:12px">Invoice Date: ${esc(dateOnly(inv.invoiceDate))}</span></div></div><table class="inv-items"><thead><tr><th style="width:7%">No.</th><th>Description</th><th style="width:12%">Qty</th><th style="width:18%">Unit Price</th><th style="width:18%">Amount</th></tr></thead><tbody>${rows}</tbody></table><div class="inv-summary"><div class="inv-summary-row"><span>Subtotal</span><strong>${fmt(inv.subtotal)}</strong></div><div class="inv-summary-row"><span>Discount</span><strong>${fmt(inv.discount)}</strong></div><div class="inv-summary-row grand"><span>Grand Total</span><strong>${fmt(inv.grandTotal)}</strong></div><div class="inv-summary-row"><span>Amount Paid</span><strong>${fmt(inv.amountPaid)}</strong></div><div class="inv-summary-row"><span>Outstanding</span><strong>${fmt(inv.outstanding)}</strong></div></div><div style="margin-top:18px;font-size:12px;line-height:1.6"><strong>Sales Person:</strong> ${esc(inv.salesperson||'')}<br><strong>Payment Method:</strong> ${esc(inv.paymentMethod||'')}<br><strong>Location Code:</strong> ${esc(inv.locationCode||'')}</div>`}
+setupSaleV2();
 loadInvoices(false);
 </script>
 </body>
