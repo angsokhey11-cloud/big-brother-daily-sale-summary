@@ -515,13 +515,39 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
  #summaryBody td.empty{grid-column:1/-1;grid-row:auto;text-align:center;padding:16px}
 }
 
+
+.bb-overview-invoice-count{display:block}
+@media(max-width:700px){
+ .topbar{margin-bottom:8px}
+ #summaryBody tr{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px 12px;padding:10px;margin-bottom:7px}
+ #summaryBody td{font-size:12px;line-height:1.3}
+ #summaryBody td:before{font-size:10px;margin-bottom:2px}
+ #summaryBody td:nth-child(1){grid-column:2;grid-row:1;text-align:right;align-self:center;font-size:12px}
+ #summaryBody td:nth-child(1):before,#summaryBody td:nth-child(3):before,#summaryBody td:nth-child(4):before{display:none}
+ #summaryBody td:nth-child(2){grid-column:1;grid-row:1;font-size:15px;align-self:center}
+ #summaryBody td:nth-child(3){grid-column:1;grid-row:2;text-align:left;align-self:center;color:#52677f}
+ #summaryBody td:nth-child(8){grid-column:2;grid-row:2;text-align:right;background:none;padding:0;color:#245da8;font-size:20px;font-weight:800;align-self:center}
+ #summaryBody td:nth-child(8):before{font-size:10px}
+ #summaryBody td:nth-child(4){grid-column:1/-1;grid-row:3;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:5px 0 7px;border-top:0;border-bottom:1px solid var(--line);font-size:11px}
+ #summaryBody td:nth-child(4) .bb-overview-invoice-count{flex-shrink:0;font-size:10px}
+ #summaryBody td:nth-child(5),#summaryBody td:nth-child(6),#summaryBody td:nth-child(9),#summaryBody td:nth-child(10){padding:1px 0;background:none;font-weight:600}
+ #summaryBody td:nth-child(5){grid-column:1;grid-row:4}
+ #summaryBody td:nth-child(6){grid-column:2;grid-row:4}
+ #summaryBody td:nth-child(9){grid-column:1;grid-row:5;color:#9a620b;border-bottom:1px solid var(--line);padding-bottom:7px}
+ #summaryBody td:nth-child(10){grid-column:2;grid-row:5;color:#9a620b;border-bottom:1px solid var(--line);padding-bottom:7px}
+ #summaryBody td:nth-child(7){grid-column:1;grid-row:6;background:none;padding:0;align-self:center;color:var(--muted);font-size:11px}
+ #summaryBody td:nth-child(7):before{content:'Exchange rate';font-size:10px}
+ #summaryBody td:nth-child(11){grid-column:2;grid-row:6;justify-content:flex-end;align-items:center}
+ #summaryBody td:last-child .btn{flex:0 1 auto;min-height:34px;min-width:96px;padding:6px 13px;font-size:12px}
+ #summaryBody td.empty{grid-column:1/-1;grid-row:auto;padding:16px;text-align:center}
+}
+
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="topbar">
     <div><h1>Daily Sale Summary</h1></div>
-    <span class="pill">Invoice History Source</span>
   </div>
   <div id="errorBox" class="statusbar"></div>
   <div class="cards">
@@ -605,6 +631,12 @@ let allInvoices=[],groups=[],filteredGroups=[],currentGroup=null,currentCustomer
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function num(v){const n=Number(v);return Number.isFinite(n)?n:0}
 function dateOnly(v){return String(v||'').slice(0,10)}
+function displaySaleDate(value){
+  const raw=String(value||'').trim(),m=raw.match(/^(\d{4})-(\d{2})-(\d{2})(?:$|T| )/);
+  if(!m)return raw;
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return months[Number(m[2])-1]?m[3]+'-'+months[Number(m[2])-1]+'-'+m[1]:raw;
+}
 function usd(v){return '$'+num(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
 function khr(v){return '៛'+num(v).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0})}
 function rate(v){return num(v).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:2})}
@@ -644,7 +676,7 @@ function renderGroups(){
   const totalUsd=filteredGroups.reduce((x,g)=>x+g.totalUSD,0),totalKhr=filteredGroups.reduce((x,g)=>x+g.totalKHR,0);const allComplete=filteredGroups.every(g=>g.rateComplete);const dailyUsd=filteredGroups.reduce((x,g)=>x+(g.dailySaleUSD==null?0:g.dailySaleUSD),0);
   $('cardUsd').textContent=usd(totalUsd);$('cardKhr').textContent=khr(totalKhr);$('cardDailyUsd').textContent=allComplete?usd(dailyUsd):'Rate Missing';
   if(!filteredGroups.length){$('summaryBody').innerHTML='<tr><td colspan="11" class="empty">No Daily Sale groups found.</td></tr>';return}
-  $('summaryBody').innerHTML=filteredGroups.map(g=>`<tr><td><strong>${esc(g.saleDate)}</strong></td><td>${esc(g.salesman)}</td><td><strong>${esc(saleLocationName(g.locationCode))}</strong></td><td class="center"><strong>${esc(g.invoiceRange)}</strong><br><small>${g.invoiceCount} invoices</small></td><td class="money">${usd(g.totalUSD)}</td><td class="money">${khr(g.totalKHR)}</td><td class="money ${g.rateComplete?'':'warn'}">${g.totalKHR? (g.rateComplete?rate(g.avgRate):'Missing Rate'):'-'}</td><td class="money daily-key">${g.dailySaleUSD==null?'—':usd(g.dailySaleUSD)}</td><td class="money">${usd(g.recvUSD)}</td><td class="money">${khr(g.recvKHR)}</td><td><button class="btn primary" onclick="openPreview(${esc(JSON.stringify(g.key))})">Preview</button></td></tr>`).join('');
+  $('summaryBody').innerHTML=filteredGroups.map(g=>`<tr><td><strong>${esc(displaySaleDate(g.saleDate))}</strong></td><td>${esc(g.salesman)}</td><td><strong>${esc(saleLocationName(g.locationCode))}</strong></td><td class="center"><strong>${esc(g.invoiceRange)}</strong><small class="bb-overview-invoice-count">${g.invoiceCount} invoices</small></td><td class="money">${usd(g.totalUSD)}</td><td class="money">${khr(g.totalKHR)}</td><td class="money ${g.rateComplete?'':'warn'}">${g.totalKHR? (g.rateComplete?rate(g.avgRate):'Missing Rate'):'-'}</td><td class="money daily-key">${g.dailySaleUSD==null?'—':usd(g.dailySaleUSD)}</td><td class="money">${usd(g.recvUSD)}</td><td class="money">${khr(g.recvKHR)}</td><td><button class="btn primary" onclick="openPreview(${esc(JSON.stringify(g.key))})">Preview</button></td></tr>`).join('');
   labelSaleCells('summaryBody',['Sale date','Salesman','Location','Invoice range','Sale USD','Sale KHR','Avg. KHR rate','USD equivalent','Receivable USD','Receivable KHR','Action']);
 }
 function clearFilters(){$('dateFrom').value='';$('dateTo').value='';$('salesmanFilter').value='';$('locationFilter').value='';applyFilters()}
@@ -749,8 +781,8 @@ async function openPreview(key){
   currentGroup=groups.find(function(g){return g.key===key});
   if(!currentGroup)return;
   const g=currentGroup;
-  $('previewSubtitle').textContent=g.saleDate+' • '+g.salesman+' • '+saleLocationName(g.locationCode);
-  $('previewMeta').innerHTML='<div class="meta-box"><small>Sale Date</small><strong>'+esc(g.saleDate)+'</strong></div><div class="meta-box"><small>Salesman</small><strong>'+esc(g.salesman)+'</strong></div><div class="meta-box"><small>Location</small><strong>'+esc(saleLocationName(g.locationCode))+'</strong></div><div class="meta-box"><small>Invoice Range</small><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div>';
+  $('previewSubtitle').textContent=displaySaleDate(g.saleDate)+' • '+g.salesman+' • '+saleLocationName(g.locationCode);
+  $('previewMeta').innerHTML='<div class="meta-box"><small>Sale Date</small><strong>'+esc(displaySaleDate(g.saleDate))+'</strong></div><div class="meta-box"><small>Salesman</small><strong>'+esc(g.salesman)+'</strong></div><div class="meta-box"><small>Location</small><strong>'+esc(saleLocationName(g.locationCode))+'</strong></div><div class="meta-box"><small>Invoice Range</small><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div>';
   $('previewBody').innerHTML='<tr><td colspan="7" class="empty">Loading invoice products…</td></tr>';
   renderPreviewTotals(g);
   renderCompactSaleCustomers(g);
@@ -791,7 +823,7 @@ function updateSaleFilterHint(){
   const d=$('bbSaleFilters');if(!d)return;
   const parts=[$('dateFrom').value||'', $('dateTo').value||''];
   const selected=[];
-  if(parts[0]||parts[1])selected.push(parts[0]===parts[1]?parts[0]:[parts[0]||'Any date',parts[1]||'Any date'].join(' – '));
+  if(parts[0]||parts[1])selected.push(parts[0]===parts[1]?displaySaleDate(parts[0]):[displaySaleDate(parts[0])||'Any date',displaySaleDate(parts[1])||'Any date'].join(' – '));
   if($('salesmanFilter').value)selected.push($('salesmanFilter').value);
   if($('locationFilter').value)selected.push(saleLocationName($('locationFilter').value));
   $('bbSaleFilterHint').textContent=(selected.join(' · ')||'All sales')+(d.open?' ▴':' ▾');
@@ -821,7 +853,7 @@ function buildDigitalSalePages(g,rows){
   function makePage(){
     const page=document.createElement('div');page.className='bb-digital-report';
     page.innerHTML='<h1>BIG BROTHER</h1><div class="bb-report-subtitle">Daily Sale Summary</div>'+
-      '<div class="bb-report-meta"><div><small>Sale Date</small><strong>'+esc(g.saleDate)+'</strong></div>'+
+      '<div class="bb-report-meta"><div><small>Sale Date</small><strong>'+esc(displaySaleDate(g.saleDate))+'</strong></div>'+
       '<div><small>Location</small><strong>'+esc(saleLocationName(g.locationCode))+'</strong></div>'+
       '<div class="bb-report-range"><small>Salesman</small><strong>'+esc(g.salesman)+'</strong></div>'+
       '<div class="bb-report-range"><small>Invoice Range · '+g.invoiceCount+' invoices</small><strong>'+esc(g.invoiceRange)+'</strong></div></div>'+
@@ -873,7 +905,7 @@ function buildDailySaleReport(){
   }).join('');
   const report=document.createElement('div');
   report.className='download-report';
-  report.innerHTML='<h1>BIG BROTHER</h1><div class="report-sub">Daily Sale Summary</div><div class="report-meta"><div><small>Sale Date</small><br><strong>'+esc(g.saleDate)+'</strong></div><div><small>Salesman</small><br><strong>'+esc(g.salesman)+'</strong></div><div><small>Location</small><br><strong>'+esc(saleLocationName(g.locationCode))+'</strong></div><div><small>Invoice Range</small><br><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div></div><table><colgroup><col style="width:6%"><col style="width:18%"><col style="width:49%"><col style="width:17%"><col style="width:10%"></colgroup><thead><tr><th class="center">No.</th><th>Customer</th><th>Sold Products</th><th>Grand Total</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table><div class="report-totals totals">'+reportTotalsHtml(g)+'</div>';
+  report.innerHTML='<h1>BIG BROTHER</h1><div class="report-sub">Daily Sale Summary</div><div class="report-meta"><div><small>Sale Date</small><br><strong>'+esc(displaySaleDate(g.saleDate))+'</strong></div><div><small>Salesman</small><br><strong>'+esc(g.salesman)+'</strong></div><div><small>Location</small><br><strong>'+esc(saleLocationName(g.locationCode))+'</strong></div><div><small>Invoice Range</small><br><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div></div><table><colgroup><col style="width:6%"><col style="width:18%"><col style="width:49%"><col style="width:17%"><col style="width:10%"></colgroup><thead><tr><th class="center">No.</th><th>Customer</th><th>Sold Products</th><th>Grand Total</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table><div class="report-totals totals">'+reportTotalsHtml(g)+'</div>';
   document.body.appendChild(report);
   return report;
 }
@@ -898,7 +930,7 @@ function buildDailySalePdfPages(){
         '<h1>BIG BROTHER</h1>'+
         '<div class="report-sub">Daily Sale Summary</div>'+
         '<div class="report-meta">'+
-          '<div><small>Sale Date</small><br><strong>'+esc(g.saleDate)+'</strong></div>'+
+          '<div><small>Sale Date</small><br><strong>'+esc(displaySaleDate(g.saleDate))+'</strong></div>'+
           '<div><small>Salesman</small><br><strong>'+esc(g.salesman)+'</strong></div>'+
           '<div><small>Location</small><br><strong>'+esc(saleLocationName(g.locationCode))+'</strong></div>'+
           '<div><small>Invoice Range</small><br><strong>'+esc(g.invoiceRange)+'</strong><br><small>'+g.invoiceCount+' invoices</small></div>'+
