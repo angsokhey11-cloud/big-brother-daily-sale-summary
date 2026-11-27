@@ -102,6 +102,13 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
  .summary-preview-page .total-row.key{font-size:17px}
 }
 
+
+/* Preview uses the unchanged PDF page DOM at its natural width.
+   Scale the outer stage, not the report's text, padding or table columns. */
+#summaryPreviewPages{display:flex;flex-direction:column;align-items:center;gap:12px;overflow-x:hidden;min-width:0;width:100%;box-sizing:border-box}
+.bb-pdf-preview-stage{position:relative;flex:none;max-width:100%;overflow:hidden;background:#fff;border-radius:3px;box-shadow:0 3px 10px rgba(23,48,79,.12)}
+.download-report.pdf-page.bb-pdf-preview-sheet{position:absolute!important;left:0!important;top:0!important;width:860px!important;min-width:860px!important;max-width:860px!important;margin:0!important;transform-origin:top left;box-shadow:none}
+
 </style>
 </head>
 <body>
@@ -162,7 +169,7 @@ html,body,input,select,textarea,td{font-family:Arial,Helvetica,'Noto Sans Khmer'
     <div class="modal-actions">
       <div class="modal-title">
         <h2>Daily Sale Summary Preview</h2>
-        <p class="summary-preview-hint">Digital report · optimized for phone viewing and sharing.</p>
+        <p class="summary-preview-hint">15 customers per page · same layout as PDF and HD pictures.</p>
       </div>
       <button class="btn secondary" onclick="closeSummaryPreview()">✕ Close</button>
     </div>
@@ -468,27 +475,61 @@ function buildDailySalePdfPages(){
   }
   return pages;
 }
+let salePreviewObserver=null,salePreviewGeneration=0;
+function fitSalePreviewPages(){
+  const container=$('summaryPreviewPages');
+  if(!container||!container.clientWidth)return;
+  const style=getComputedStyle(container);
+  const available=Math.max(1,container.clientWidth-(parseFloat(style.paddingLeft)||0)-(parseFloat(style.paddingRight)||0));
+  container.querySelectorAll('.bb-pdf-preview-stage').forEach(stage=>{
+    const page=stage.firstElementChild;
+    if(!page)return;
+    const w=page.offsetWidth,h=page.offsetHeight;
+    if(!w||!h)return;
+    const scale=Math.min(1,available/w);
+    stage.style.width=Math.ceil(w*scale)+'px';
+    stage.style.height=Math.ceil(h*scale)+'px';
+    page.style.transform='scale('+scale+')';
+  });
+}
 async function openSummaryPreview(){
   if(!currentGroup||!currentCustomerRows.length)return;
   closeSummaryPreview();
-  const g=currentGroup,rows=currentCustomerRows.slice(),container=$('summaryPreviewPages'),overlay=$('summaryPreviewOverlay');
+  const generation=salePreviewGeneration,g=currentGroup,container=$('summaryPreviewPages'),overlay=$('summaryPreviewOverlay');
   overlay.classList.remove('hidden');
+  let pages=[];
   try{
     await readySaleFonts();
-    if(currentGroup!==g||overlay.classList.contains('hidden'))return;
-    const pages=buildDigitalSalePages(g,rows);
-    container.innerHTML='';
-    pages.forEach(function(page){page.classList.add('summary-preview-page');container.appendChild(page);});
-    if(!pages.length)container.innerHTML='<div class="summary-preview-empty">No Daily Sale rows to preview.</div>';
-  }catch(error){container.textContent=error.message||'Could not load summary preview.';}
+    if(generation!==salePreviewGeneration||currentGroup!==g||overlay.classList.contains('hidden'))return;
+    pages=buildDailySalePdfPages();
+    container.replaceChildren();
+    pages.forEach(page=>{
+      const stage=document.createElement('div');
+      stage.className='bb-pdf-preview-stage';
+      page.classList.add('bb-pdf-preview-sheet');
+      stage.appendChild(page);
+      container.appendChild(stage);
+    });
+    if(!pages.length){container.innerHTML='<div class="summary-preview-empty">No Daily Sale rows to preview.</div>';return;}
+    fitSalePreviewPages();
+    if(typeof ResizeObserver==='function'){
+      salePreviewObserver=new ResizeObserver(fitSalePreviewPages);
+      salePreviewObserver.observe(container);
+      pages.forEach(page=>salePreviewObserver.observe(page));
+    }
+    window.addEventListener('resize',fitSalePreviewPages);
+    requestAnimationFrame(fitSalePreviewPages);
+  }catch(error){
+    pages.forEach(page=>page.remove());
+    container.textContent=error.message||'Could not load summary preview.';
+  }
 }
 function closeSummaryPreview(){
-  const overlay=$('summaryPreviewOverlay');
-  const container=$('summaryPreviewPages');
-  if(container){
-    container.querySelectorAll('.summary-preview-page').forEach(function(page){page.remove()});
-    if(!container.children.length)container.innerHTML='<div class="summary-preview-empty">Loading summary preview…</div>';
-  }
+  salePreviewGeneration++;
+  if(salePreviewObserver){salePreviewObserver.disconnect();salePreviewObserver=null;}
+  window.removeEventListener('resize',fitSalePreviewPages);
+  const overlay=$('summaryPreviewOverlay'),container=$('summaryPreviewPages');
+  if(container)container.innerHTML='<div class="summary-preview-empty">Loading summary preview…</div>';
   if(overlay)overlay.classList.add('hidden');
 }
 function safeFilePart(v){return String(v||'').replace(/[^a-z0-9_-]+/gi,'_').replace(/^_+|_+$/g,'')}

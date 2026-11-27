@@ -60,7 +60,7 @@ function inject(){let doc,win;try{doc=frame.contentDocument||frame.contentWindow
 try{
   await assertPermission();
   frame.addEventListener('load',()=>{setTimeout(inject,60);setTimeout(inject,300);setTimeout(inject,900)});
-  frame.src='index.html?embed=1&mobileSkin=2&v=20261128-pdf-picture-hd-v3';
+  frame.src='index.html?embed=1&mobileSkin=2&v=20261128-pdf-preview-v4';
   let tries=0;const timer=setInterval(()=>{tries++;try{if(inject()||tries>20)clearInterval(timer)}catch(_){if(tries>20)clearInterval(timer)}},150);
 }catch(error){console.error('Daily Sale Summary Mobile:',error);showError(error?.message||error)}
 })();
