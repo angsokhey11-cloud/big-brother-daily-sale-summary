@@ -30,6 +30,7 @@ function inject(){let doc,win;try{doc=frame.contentDocument||frame.contentWindow
     doc.getElementById('bb-daily-mobile-css')?.remove();
     doc.getElementById('bbDailyFilterBackdrop')?.remove();
     doc.getElementById('bbDailyMobileBar')?.remove();
+    if(doc.getElementById('bbInvoiceStage')){boot.classList.add('hide');frame.style.display='block';return true;}
     if(!doc.getElementById('bb-daily-invoice-fit-v2')){
       const style=doc.createElement('style');style.id='bb-daily-invoice-fit-v2';
       style.textContent="#invoiceOverlay>.modal{overflow:hidden!important;display:flex!important;flex-direction:column!important}#invoiceOverlay .modal-actions{flex:0 0 auto!important}.bb-daily-invoice-scroll{flex:1 1 auto;min-height:0;overflow:auto;padding:4px 0 70px}.bb-daily-invoice-stage{position:relative;min-height:1px;margin:0 auto;--bb-invoice-scale:1}.bb-daily-invoice-stage #invoiceSheet{position:absolute!important;left:0;top:0;width:794px!important;min-width:794px!important;max-width:794px!important;margin:0!important;transform:scale(var(--bb-invoice-scale));transform-origin:top left;box-shadow:none!important;box-sizing:border-box!important}\n";doc.head.appendChild(style);
@@ -60,7 +61,7 @@ function inject(){let doc,win;try{doc=frame.contentDocument||frame.contentWindow
 try{
   await assertPermission();
   frame.addEventListener('load',()=>{setTimeout(inject,60);setTimeout(inject,300);setTimeout(inject,900)});
-  frame.src='index.html?embed=1&mobileSkin=2&v=20261128-location-invoice-v7';
+  frame.src='index.html?embed=1&mobileSkin=2&v=20261128-history-invoice-v8';
   let tries=0;const timer=setInterval(()=>{tries++;try{if(inject()||tries>20)clearInterval(timer)}catch(_){if(tries>20)clearInterval(timer)}},150);
 }catch(error){console.error('Daily Sale Summary Mobile:',error);showError(error?.message||error)}
 })();
